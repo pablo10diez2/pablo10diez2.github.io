@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/tags/buffer-overflow/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="Buffer Overflow">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+<title>Buffer Overflow | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pablo10diez2.github.io/tags/buffer-overflow/">
+<link rel="stylesheet" href="/book.min.f1179be489a23e4d8fea3aec84b7f5a6d5b6470d1fc4df807bebdfea132a3a85.css" integrity="sha256-8Reb5ImiPk2P6jrshLf1ptW2Rw0fxN&#43;Ae&#43;vf6hMqOoU=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.87b51de7fe2e6fd34d8733bb9959121257c3d4dcfccc0184d5c7968f4c1dd402.js" integrity="sha256-h7Ud5/4ub9NNhzO7mVkSElfD1Nz8zAGE1ceWj0wd1AI=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://pablo10diez2.github.io/tags/buffer-overflow/index.xml" title="Pablo Díez" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-term book-type-tags">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Buffer Overflow</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav>
+  <ul>
+  
+    
+    <li class="book-section-flat">
+      <span>Categories</span>
+      <ul>
+      
+        <li class="flex justify-between">
+          <a href="/categories/crypto/">Crypto</a>
+          <span>4</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/categories/reversing/">Reversing</a>
+          <span>1</span>
+        </li>
+      
+      </ul>
+    </li>
+    
+  
+    
+    <li class="book-section-flat">
+      <span>Tags</span>
+      <ul>
+      
+        <li class="flex justify-between">
+          <a href="/tags/buffer-overflow/">Buffer Overflow</a>
+          <span>2</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/crypto/">Crypto</a>
+          <span>1</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/exploitation/">Exploitation</a>
+          <span>2</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/gdb/">Gdb</a>
+          <span>2</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/math/">Math</a>
+          <span>3</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/cantor/">Cantor</a>
+          <span>1</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/cryptography/">Cryptography</a>
+          <span>2</span>
+        </li>
+      
+        <li class="flex justify-between">
+          <a href="/tags/rsa/">Rsa</a>
+          <span>1</span>
+        </li>
+      
+      </ul>
+    </li>
+    
+  
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  
+  <article class="markdown book-post">
+    <h2>
+      <a href="/docs/writeups/l3akctf/basiclll/">BasicLLL</a>
+    </h2>
+    
+  <div class="flex align-center text-small book-post-date">
+    <img src="/svg/calendar.svg" class="book-icon " alt="" />
+    <span>July 14, 2025</span>
+  </div>
+
+
+
+  
+  <div class="text-small">
+    
+      <a href="/categories/crypto/">Crypto</a>
+  </div>
+  
+
+  
+  <div class="text-small">
+    
+      <a href="/tags/buffer-overflow/">Buffer Overflow</a>, 
+      <a href="/tags/exploitation/">Exploitation</a>, 
+      <a href="/tags/gdb/">Gdb</a>
+  </div>
+  
+
+
+    <p><p>Challenge:
+<strong>Simple crypto is the best crypto.</strong></p>
+<p>For this crypto chall we have to download 1 file. A sage one.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate</span>():
+</span></span><span style="display:flex;"><span>    p <span style="color:#f92672">=</span> random_prime(<span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">1024</span>, lbound<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">1023</span>)
+</span></span><span style="display:flex;"><span>    x<span style="color:#f92672">=</span>randint(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>    y<span style="color:#f92672">=</span>randint(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">256</span>)
+</span></span><span style="display:flex;"><span>    a<span style="color:#f92672">=</span>randint(<span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">1023</span>,<span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">=</span>random_prime(<span style="color:#ae81ff">2</span><span style="color:#f92672">^</span><span style="color:#ae81ff">1024</span>)
+</span></span><span style="display:flex;"><span>    n<span style="color:#f92672">=</span>p<span style="color:#f92672">*</span>q
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x,a,y,n,p
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x,a,y,n,p <span style="color:#f92672">=</span> generate()
+</span></span><span style="display:flex;"><span>k <span style="color:#f92672">=</span> x <span style="color:#f92672">*</span> y <span style="color:#f92672">+</span> a <span style="color:#f92672">*</span> p
+</span></span><span style="display:flex;"><span>e<span style="color:#f92672">=</span><span style="color:#ae81ff">65537</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;x = </span><span style="color:#e6db74">{</span>x<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;a = </span><span style="color:#e6db74">{</span>a<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;n = </span><span style="color:#e6db74">{</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;k = </span><span style="color:#e6db74">{</span>k<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>m <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;L3AK{&lt;Redacted&gt;}&#39;</span>
+</span></span><span style="display:flex;"><span>flag <span style="color:#f92672">=</span> int<span style="color:#f92672">.</span>from_bytes(m, byteorder<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;big&#39;</span>)
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">=</span> pow(flag, e, n)
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;c = </span><span style="color:#e6db74">{</span>c<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">x = 54203
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">a = 139534605978199350449870348663594126359773246906906418074945064315708552206952695156472923968554408862426942537522569163756593332601739006413404986641247624386522169136633429464195370373009454673819688653512479919153332504769835621608305089536245284458011218876474599059184828911301976396971466368457267831713
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">n = 12909957208634846878337953184362917609451224905637563117148705894888627434882610771803126452504238664471840340722310690445704139825753660053450331966698205860077330083433391290469454571152366284661640391190008258576947840075212180965738595761925516686689797153224716140447515370184846067654512660266993573880775530634588475842083212670090415716860925772115834314563453955681012820960922892736520042799257599331942717963921797157341454739255402633419216921702659541513141028779948257696746810146033667942181244847983610429227387863821351416689099862418820999250005071861968501333899759899513283613946626413863922604073
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">k = 24474689179117620559916890529357882261493825442019850679598519081287156822984032786458479363048845076078220151760752906879055457682971398809768604333650029141164831566127754715775782823279839766009120238777348170982471623193652714921064243946655726118484337862412275391615166714375745390409664610412156281691721978732319253694004232933156865189917761521085635692596755802274763409871937618659197646864593743015558828475450200247766980008744319676783526158213931581034209356092026748307730083927225249093712227456855972520574747646873074625455900058136458828591335711677741591552501530047335481073272381631524755666119
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c = 11185314040721202177044508537272244264288033276739579716599246665772965854249656943282002695659011960313245796587834222078633141747802754149848079632693280265262199729548775879612614113828267471629389698999657686858047585254549801752634049341009476489652456620836030696102393122618822021082792763848220677651608135328630551380537642144416978955966827336280510774254681264136102268730343853559751471313539810499170669215479225898738527316798768622089152851154959800113070358637984124299357803777453137311143202502153552192970732744885328421213081964363890280109214401691255867427694709196120824176729643585687319321473
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span></code></pre></div><p>With just a simple look we can see that this is RSA. So once we are aware of that, we know that in order to decipher RSA we need d, the private key. If you don&rsquo;t understand or are not very familiar with RSA I would suggest checking this: <a href="https://www.geeksforgeeks.org/computer-networks/rsa-algorithm-cryptography/">https://www.geeksforgeeks.org/computer-networks/rsa-algorithm-cryptography/</a> , that will give you a brief summary in order to understand the following equations.</p></p>
+  </article>
+  
+  <article class="markdown book-post">
+    <h2>
+      <a href="/docs/writeups/dawgctf/64-bits/">64 bits in my ark and texture</a>
+    </h2>
+    
+  <div class="flex align-center text-small book-post-date">
+    <img src="/svg/calendar.svg" class="book-icon " alt="" />
+    <span>April 21, 2025</span>
+  </div>
+
+
+
+  
+  <div class="text-small">
+    
+      <a href="/categories/reversing/">Reversing</a>
+  </div>
+  
+
+  
+  <div class="text-small">
+    
+      <a href="/tags/buffer-overflow/">Buffer Overflow</a>, 
+      <a href="/tags/exploitation/">Exploitation</a>, 
+      <a href="/tags/gdb/">Gdb</a>
+  </div>
+  
+
+
+    <p><p>Challenge:
+<strong>64 bits in my Ark and Texture (300 points)
+Can you pwn it? No libc or system needed. Just good ol, 64 bit binary exploitation.
+nc connect.umbccd.net 22237</strong></p>
+<p>Alongside this, we are provided with a binary file. When we execute the
+file 3 basic questions about x86-64 appear.
+Once we answer the first three questions (2, 1, 4), the first part of the real
+challenge is proposed:</p>
+<p><img src="/images/questions.png" alt="Questions" /></p></p>
+  </article>
+  
+
+  
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
