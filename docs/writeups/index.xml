@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Writeups on Pablo Díez</title>
-    <link>https://pablo10diez2.github.io/docs/writeups/</link>
+    <link>http://localhost:1313/docs/writeups/</link>
     <description>Recent content in Writeups on Pablo Díez</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate></lastBuildDate>
-    <atom:link href="https://pablo10diez2.github.io/docs/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/docs/writeups/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
