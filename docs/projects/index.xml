@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Projects on Pablo Díez</title>
-    <link>http://localhost:1313/docs/projects/</link>
+    <link>https://pablo10diez2.github.io/docs/projects/</link>
     <description>Recent content in Projects on Pablo Díez</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <atom:link href="http://localhost:1313/docs/projects/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pablo10diez2.github.io/docs/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mi Proyecto</title>
-      <link>http://localhost:1313/docs/projects/mi-proyecto/</link>
+      <link>https://pablo10diez2.github.io/docs/projects/mi-proyecto/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/docs/projects/mi-proyecto/</guid>
+      <guid>https://pablo10diez2.github.io/docs/projects/mi-proyecto/</guid>
       <description></description>
     </item>
   </channel>
