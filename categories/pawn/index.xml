@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pawn on Pablo Díez</title>
+    <link>https://pablo10diez2.github.io/categories/pawn/</link>
+    <description>Recent content in Pawn on Pablo Díez</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 14 Jul 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://pablo10diez2.github.io/categories/pawn/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What you have</title>
+      <link>https://pablo10diez2.github.io/docs/writeups/0xfunctf/whatyouhave/</link>
+      <pubDate>Mon, 14 Jul 2025 00:00:00 +0000</pubDate>
+      <guid>https://pablo10diez2.github.io/docs/writeups/0xfunctf/whatyouhave/</guid>
+      <description>&lt;p&gt;Challenge:&#xA;&lt;strong&gt;Bring it on! Show me EVERYTHING you’ve got! I want to see all you&amp;rsquo;ve got!&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;p&gt;Before starting with the writeup, the idea for solving this challenge came from my colleague &lt;a href=&#34;https://markelmencia.com/&#34;&gt;Markel&lt;/a&gt;, kudos to him and make sure to check out his page!&lt;/p&gt;&#xA;&lt;p&gt;We have the classic pawn scenario, a binary with a network connection.&lt;/p&gt;&#xA;&lt;p&gt;If we download the binary and execute it we encounter the following:&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://pablo10diez2.github.io/images/fun1.png&#34; alt=&#34;Output&#34; /&gt;&lt;/p&gt;&#xA;&lt;p&gt;After being asked two times the same question a segmentation fault happens.&#xA;Lets now decompile the code and see what all this is about.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
