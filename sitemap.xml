@@ -5,12 +5,14 @@
     <loc>https://pablo10diez2.github.io/docs/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+    <loc>https://pablo10diez2.github.io/docs/projects/fluid/</loc>
   </url><url>
-    <loc>https://pablo10diez2.github.io/docs/projects/mi-proyecto/</loc>
+    <loc>https://pablo10diez2.github.io/docs/projects/lepicasso/</loc>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/projects/</loc>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/writeups/</loc>
+    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/</loc>
     <lastmod>2025-08-25T00:00:00+00:00</lastmod>
@@ -22,6 +24,12 @@
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/basiclll/</loc>
+    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/shirohero/</loc>
+    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/writeups/0xfunctf/whatyouhave/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/tags/buffer-overflow/</loc>
@@ -45,16 +53,10 @@
     <loc>https://pablo10diez2.github.io/tags/math/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/categories/pawn/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/shirohero/</loc>
+    <loc>https://pablo10diez2.github.io/categories/pwn/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/tags/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/0xfunctf/whatyouhave/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/</loc>
@@ -69,10 +71,10 @@
     <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/baby-rsa2/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/tags/cantor/</loc>
+    <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/cantorspairadox/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/cantorspairadox/</loc>
+    <loc>https://pablo10diez2.github.io/tags/cantor/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/tags/cryptography/</loc>

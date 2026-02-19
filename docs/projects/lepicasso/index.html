@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Le-Picasso
+  
+  #
+  
+
+Le-Picasso is an end-to-end project that allows users to control a robotic arm (SO-100) and make it draw objects using just their voice. This project was developed during the LeRobot Bilbao Hackathon with my colleagues Lingfeng, Dani, Andrei and Martín.
+Highlight: End-to-end pipeline combining real-time NLP, robotics and a web interface.
+
+  How it works
+  
+  #
+  
+
+The architecture connects a user-friendly frontend with advanced AI audio processing and physical hardware execution:">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/docs/projects/lepicasso/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="Le-Picasso">
+  <meta property="og:description" content="Le-Picasso # Le-Picasso is an end-to-end project that allows users to control a robotic arm (SO-100) and make it draw objects using just their voice. This project was developed during the LeRobot Bilbao Hackathon with my colleagues Lingfeng, Dani, Andrei and Martín.
+Highlight: End-to-end pipeline combining real-time NLP, robotics and a web interface.
+How it works # The architecture connects a user-friendly frontend with advanced AI audio processing and physical hardware execution:">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Le-Picasso | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pablo10diez2.github.io/docs/projects/lepicasso/">
+<link rel="stylesheet" href="/book.min.e6c70d4d85c4e622658404043204b37e3a40e7c5f583acf3aa703e4adef31fb3.css" integrity="sha256-5scNTYXE5iJlhAQEMgSzfjpA58X1g6zzqnA&#43;St7zH7M=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.8fe47bcedcba5932e4a9a075e2aa043148c58ba1d4fc243e8d0a3b89ff5e7f69.js" integrity="sha256-j&#43;R7zty6WTLkqaB14qoEMUjFi6HU/CQ&#43;jQo7if9ef2k=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/fluid/" class="">Fluid Simulation SPH</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/lepicasso/" class="active">Le-Picasso</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>0xfun Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">[pwn] What you have</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">[crypto] BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">[crypto] Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">[reversing] 64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">[crypto] Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">[crypto] Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Le-Picasso</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#how-it-works">How it works</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="le-picasso">
+  Le-Picasso
+  
+  <a class="anchor" href="#le-picasso">#</a>
+  
+</h1>
+<p><strong>Le-Picasso</strong> is an end-to-end project that allows users to control a robotic arm (SO-100) and make it draw objects using just their voice. This project was developed during the <strong>LeRobot Bilbao Hackathon</strong> with my colleagues <a href="https://lingfeng.work">Lingfeng</a>, <a href="https://www.linkedin.com/in/dani-suso-40263423b/">Dani</a>, <a href="https://vasileandreipopan.com">Andrei</a> and <a href="https://none3075.github.io/">Martín</a>.</p>
+<p>Highlight: End-to-end pipeline combining real-time NLP, robotics and a web interface.</p>
+<h2 id="how-it-works">
+  How it works
+  
+  <a class="anchor" href="#how-it-works">#</a>
+  
+</h2>
+<p>The architecture connects a user-friendly frontend with advanced AI audio processing and physical hardware execution:</p>
+<ol>
+<li><strong>Web Application:</strong> Users interact with a graphical web interface where they can record and send their voice commands.</li>
+<li><strong>AI Audio Processing:</strong> An AI model processes the incoming audio in real-time.</li>
+<li><strong>Instruction Extraction (NLP):</strong> We utilized <strong>Named Entity Recognition (NER)</strong> to parse the natural language input and extract the specific drawing instructions (e.g., understanding that &ldquo;draw a house&rdquo; means the target object is a &ldquo;house&rdquo;).</li>
+<li><strong>Robotic Execution:</strong> The parsed commands are sent to the robotic arm via the LeRobot framework, which then physically executes the task by drawing the requested object on paper.</li>
+</ol>
+<!-- raw HTML omitted -->
+<hr>
+<p><a href="https://github.com/vasileandreipopan/lePicasso">Link to Repository</a></p>
+<p><img src="/images/picasso1.png" alt="pic0" /></p>
+<p><img src="/images/picaso2.jpg" alt="pic1" /></p>
+</article>
+ 
+      <div style="text-align: center; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+  <a href="https://www.linkedin.com/in/pablodíez/" target="_blank" rel="noopener">LinkedIn</a>
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  <a href="mailto:pablodiezruiz111@gmail.com">Mail</a>
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  <a href="https://github.com/pablo10diez2" target="_blank" rel="noopener">GitHub</a>
+</div>
+
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/projects/fluid/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Fluid Simulation SPH" />
+        <span>Fluid Simulation SPH</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/writeups/0xfunctf/whatyouhave/" class="flex align-center book-icon">
+        <span>[pwn] What you have</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="[pwn] What you have" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#how-it-works">How it works</a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Fluid Simulation SPH
+  
+  #
+  
+
+An interactive, real-time fluid simulation written in C&#43;&#43;. This project models how liquids behave, move, and interact using the Smoothed Particle Hydrodynamics (SPH) method.
+Simulating physics particle by particle can be incredibly demanding for a computer. Therefore, the core focus of this project was balancing realistic fluid dynamics with high-performance optimization.
+
+  Features &amp; Implementation
+  
+  #
+  
+
+
+Realistic Physics: Accurately simulates real-world fluid properties, including pressure, viscosity, and density, to create natural-looking liquid movement.
+GPU Rendering: Utilizes OpenGL for hardware-accelerated rendering, ensuring the visual output is handled efficiently by the graphics card.
+Algorithmic Optimization: The most computationally expensive part of fluid simulation is calculating how particles interact with each other. To solve this, the project implements spatial hashing, a technique that drastically speeds up neighbor searches by grouping nearby particles, reducing overall computational complexity.
+Real-Time Performance: Thanks to these structural optimizations, the simulation achieves interactive, real-time frame rates (well over 60 FPS) while handling hundreds of particles simultaneously.
+
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/docs/projects/fluid/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="Fluid Simulation SPH">
+  <meta property="og:description" content="Fluid Simulation SPH # An interactive, real-time fluid simulation written in C&#43;&#43;. This project models how liquids behave, move, and interact using the Smoothed Particle Hydrodynamics (SPH) method.
+Simulating physics particle by particle can be incredibly demanding for a computer. Therefore, the core focus of this project was balancing realistic fluid dynamics with high-performance optimization.
+Features &amp; Implementation # Realistic Physics: Accurately simulates real-world fluid properties, including pressure, viscosity, and density, to create natural-looking liquid movement. GPU Rendering: Utilizes OpenGL for hardware-accelerated rendering, ensuring the visual output is handled efficiently by the graphics card. Algorithmic Optimization: The most computationally expensive part of fluid simulation is calculating how particles interact with each other. To solve this, the project implements spatial hashing, a technique that drastically speeds up neighbor searches by grouping nearby particles, reducing overall computational complexity. Real-Time Performance: Thanks to these structural optimizations, the simulation achieves interactive, real-time frame rates (well over 60 FPS) while handling hundreds of particles simultaneously.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+<title>Fluid Simulation SPH | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pablo10diez2.github.io/docs/projects/fluid/">
+<link rel="stylesheet" href="/book.min.e6c70d4d85c4e622658404043204b37e3a40e7c5f583acf3aa703e4adef31fb3.css" integrity="sha256-5scNTYXE5iJlhAQEMgSzfjpA58X1g6zzqnA&#43;St7zH7M=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.8fe47bcedcba5932e4a9a075e2aa043148c58ba1d4fc243e8d0a3b89ff5e7f69.js" integrity="sha256-j&#43;R7zty6WTLkqaB14qoEMUjFi6HU/CQ&#43;jQo7if9ef2k=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/fluid/" class="active">Fluid Simulation SPH</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/lepicasso/" class="">Le-Picasso</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>0xfun Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">[pwn] What you have</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">[crypto] BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">[crypto] Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">[reversing] 64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">[crypto] Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">[crypto] Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Fluid Simulation SPH</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#features--implementation">Features &amp; Implementation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="fluid-simulation-sph">
+  Fluid Simulation SPH
+  
+  <a class="anchor" href="#fluid-simulation-sph">#</a>
+  
+</h1>
+<p>An interactive, real-time fluid simulation written in <strong>C++</strong>. This project models how liquids behave, move, and interact using the <strong>Smoothed Particle Hydrodynamics (SPH)</strong> method.</p>
+<p>Simulating physics particle by particle can be incredibly demanding for a computer. Therefore, the core focus of this project was balancing realistic fluid dynamics with high-performance optimization.</p>
+<h3 id="features--implementation">
+  Features &amp; Implementation
+  
+  <a class="anchor" href="#features--implementation">#</a>
+  
+</h3>
+<ul>
+<li><strong>Realistic Physics:</strong> Accurately simulates real-world fluid properties, including pressure, viscosity, and density, to create natural-looking liquid movement.</li>
+<li><strong>GPU Rendering:</strong> Utilizes <strong>OpenGL</strong> for hardware-accelerated rendering, ensuring the visual output is handled efficiently by the graphics card.</li>
+<li><strong>Algorithmic Optimization:</strong> The most computationally expensive part of fluid simulation is calculating how particles interact with each other. To solve this, the project implements <strong>spatial hashing</strong>, a technique that drastically speeds up neighbor searches by grouping nearby particles, reducing overall computational complexity.</li>
+<li><strong>Real-Time Performance:</strong> Thanks to these structural optimizations, the simulation achieves interactive, real-time frame rates (well over 60 FPS) while handling hundreds of particles simultaneously.</li>
+</ul>
+<p><img src="/images/fluid1.png" alt="fluid1" /></p>
+<p><img src="/images/fluid2.png" alt="fluid2" /></p>
+<hr>
+<p><a href="https://github.com/pablo10diez2/Fluid_SimulationSPH">View Repository on GitHub</a></p>
+</article>
+ 
+      <div style="text-align: center; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+  <a href="https://www.linkedin.com/in/pablodíez/" target="_blank" rel="noopener">LinkedIn</a>
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  <a href="mailto:pablodiezruiz111@gmail.com">Mail</a>
+  &nbsp;&nbsp;•&nbsp;&nbsp;
+  <a href="https://github.com/pablo10diez2" target="_blank" rel="noopener">GitHub</a>
+</div>
+
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/projects/lepicasso/" class="flex align-center book-icon">
+        <span>Le-Picasso</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Le-Picasso" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#features--implementation">Features &amp; Implementation</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

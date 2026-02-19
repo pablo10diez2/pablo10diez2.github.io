@@ -9,11 +9,18 @@
     <lastBuildDate>Mon, 14 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Mi Proyecto</title>
-      <link>https://pablo10diez2.github.io/docs/projects/mi-proyecto/</link>
+      <title>Fluid Simulation SPH</title>
+      <link>https://pablo10diez2.github.io/docs/projects/fluid/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://pablo10diez2.github.io/docs/projects/mi-proyecto/</guid>
-      <description></description>
+      <guid>https://pablo10diez2.github.io/docs/projects/fluid/</guid>
+      <description>&lt;h1 id=&#34;fluid-simulation-sph&#34;&gt;&#xA;  Fluid Simulation SPH&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#fluid-simulation-sph&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;An interactive, real-time fluid simulation written in &lt;strong&gt;C++&lt;/strong&gt;. This project models how liquids behave, move, and interact using the &lt;strong&gt;Smoothed Particle Hydrodynamics (SPH)&lt;/strong&gt; method.&lt;/p&gt;&#xA;&lt;p&gt;Simulating physics particle by particle can be incredibly demanding for a computer. Therefore, the core focus of this project was balancing realistic fluid dynamics with high-performance optimization.&lt;/p&gt;&#xA;&lt;h3 id=&#34;features--implementation&#34;&gt;&#xA;  Features &amp;amp; Implementation&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#features--implementation&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Realistic Physics:&lt;/strong&gt; Accurately simulates real-world fluid properties, including pressure, viscosity, and density, to create natural-looking liquid movement.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;GPU Rendering:&lt;/strong&gt; Utilizes &lt;strong&gt;OpenGL&lt;/strong&gt; for hardware-accelerated rendering, ensuring the visual output is handled efficiently by the graphics card.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Algorithmic Optimization:&lt;/strong&gt; The most computationally expensive part of fluid simulation is calculating how particles interact with each other. To solve this, the project implements &lt;strong&gt;spatial hashing&lt;/strong&gt;, a technique that drastically speeds up neighbor searches by grouping nearby particles, reducing overall computational complexity.&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Real-Time Performance:&lt;/strong&gt; Thanks to these structural optimizations, the simulation achieves interactive, real-time frame rates (well over 60 FPS) while handling hundreds of particles simultaneously.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://pablo10diez2.github.io/images/fluid1.png&#34; alt=&#34;fluid1&#34; /&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Le-Picasso</title>
+      <link>https://pablo10diez2.github.io/docs/projects/lepicasso/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://pablo10diez2.github.io/docs/projects/lepicasso/</guid>
+      <description>&lt;h1 id=&#34;le-picasso&#34;&gt;&#xA;  Le-Picasso&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#le-picasso&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;strong&gt;Le-Picasso&lt;/strong&gt; is an end-to-end project that allows users to control a robotic arm (SO-100) and make it draw objects using just their voice. This project was developed during the &lt;strong&gt;LeRobot Bilbao Hackathon&lt;/strong&gt; with my colleagues &lt;a href=&#34;https://lingfeng.work&#34;&gt;Lingfeng&lt;/a&gt;, &lt;a href=&#34;https://www.linkedin.com/in/dani-suso-40263423b/&#34;&gt;Dani&lt;/a&gt;, &lt;a href=&#34;https://vasileandreipopan.com&#34;&gt;Andrei&lt;/a&gt; and &lt;a href=&#34;https://none3075.github.io/&#34;&gt;Martín&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Highlight: End-to-end pipeline combining real-time NLP, robotics and a web interface.&lt;/p&gt;&#xA;&lt;h2 id=&#34;how-it-works&#34;&gt;&#xA;  How it works&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#how-it-works&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h2&gt;&#xA;&lt;p&gt;The architecture connects a user-friendly frontend with advanced AI audio processing and physical hardware execution:&lt;/p&gt;</description>
     </item>
     <item>
       <title>BasicLLL</title>
