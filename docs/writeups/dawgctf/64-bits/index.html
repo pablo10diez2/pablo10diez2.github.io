@@ -27,13 +27,13 @@ Alongside this, we are provided with a binary file. When we execute the file 3 b
     <meta property="article:tag" content="Buffer Overflow">
     <meta property="article:tag" content="Exploitation">
     <meta property="article:tag" content="Gdb">
-<title>[reversing] 64 bits in my ark and texture | Pablo Díez</title>
+<title>System architecture - 64 bits in my ark and texture | Pablo Díez</title>
 <link rel="icon" href="/favicon.png" >
 <link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/writeups/dawgctf/64-bits/">
-<link rel="stylesheet" href="/book.min.e6c70d4d85c4e622658404043204b37e3a40e7c5f583acf3aa703e4adef31fb3.css" integrity="sha256-5scNTYXE5iJlhAQEMgSzfjpA58X1g6zzqnA&#43;St7zH7M=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.8fe47bcedcba5932e4a9a075e2aa043148c58ba1d4fc243e8d0a3b89ff5e7f69.js" integrity="sha256-j&#43;R7zty6WTLkqaB14qoEMUjFi6HU/CQ&#43;jQo7if9ef2k=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.239bc2490fae8c7a33998ad7112df5b711f3b5c7be6da35c507a44a1dcfbe868.js" integrity="sha256-I5vCSQ&#43;ujHozmYrXES31txHztce&#43;baNcUHpEodz76Gg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -78,6 +78,37 @@ https://github.com/alex-shpak/hugo-book
 
   
   <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Articles</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/traits_concurrency/" class="">C++ <em>type_traits</em>, from a multithreading prespective</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
     
       
         <li class="book-section-flat" >
@@ -156,7 +187,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">[pwn] What you have</a>
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">System Architecure - What you have</a>
   
 
         </li>
@@ -187,7 +218,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/writeups/l3akctf/basiclll/" class="">[crypto] BasicLLL</a>
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">Cryptography - BasicLLL</a>
   
 
         </li>
@@ -200,7 +231,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/writeups/l3akctf/shirohero/" class="">[crypto] Shiro Hero</a>
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">Cryptography - Shiro Hero</a>
   
 
         </li>
@@ -231,7 +262,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/writeups/dawgctf/64-bits/" class="active">[reversing] 64 bits in my ark and texture</a>
+    <a href="/docs/writeups/dawgctf/64-bits/" class="active">System architecture - 64 bits in my ark and texture</a>
   
 
         </li>
@@ -244,7 +275,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">[crypto] Baby-RSA 2</a>
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">Cryptography - Baby-RSA 2</a>
   
 
         </li>
@@ -257,7 +288,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">[crypto] Cantors Pairadox</a>
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">Cryptography - Cantors Pairadox</a>
   
 
         </li>
@@ -309,7 +340,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>[reversing] 64 bits in my ark and texture</h3>
+  <h3>System architecture - 64 bits in my ark and texture</h3>
 
   <label for="toc-control">
     
@@ -592,14 +623,7 @@ saw in a photo earlier we need the 3 register that pass the first 3 arguments, r
 4r3_r34dy_2_pwn!}</strong></p>
 </article>
  
-      <div style="text-align: center; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
-  <a href="https://www.linkedin.com/in/pablodíez/" target="_blank" rel="noopener">LinkedIn</a>
-  &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="mailto:pablodiezruiz111@gmail.com">Mail</a>
-  &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="https://github.com/pablo10diez2" target="_blank" rel="noopener">GitHub</a>
-</div>
-
+      
 
       <footer class="book-footer">
         
@@ -622,16 +646,16 @@ saw in a photo earlier we need the 3 register that pass the first 3 arguments, r
     <span>
     
       <a href="/docs/writeups/l3akctf/shirohero/" class="flex align-center book-icon">
-        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="[crypto] Shiro Hero" />
-        <span>[crypto] Shiro Hero</span>
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Cryptography - Shiro Hero" />
+        <span>Cryptography - Shiro Hero</span>
       </a>
     
     </span>
     <span>
     
       <a href="/docs/writeups/dawgctf/baby-rsa2/" class="flex align-center book-icon">
-        <span>[crypto] Baby-RSA 2</span>
-        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="[crypto] Baby-RSA 2" />
+        <span>Cryptography - Baby-RSA 2</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="Cryptography - Baby-RSA 2" />
       </a>
     
     </span>

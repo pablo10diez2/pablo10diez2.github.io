@@ -2,14 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</loc>
+    <lastmod>2026-03-15T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://pablo10diez2.github.io/docs/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+    <lastmod>2026-03-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/projects/fluid/</loc>
+    <lastmod>2026-02-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/projects/lepicasso/</loc>
+    <lastmod>2026-01-20T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/articles/</loc>
+    <lastmod>2026-03-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/projects/</loc>
+    <lastmod>2026-02-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/writeups/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
@@ -23,25 +32,22 @@
     <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/basiclll/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/shirohero/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://pablo10diez2.github.io/docs/writeups/0xfunctf/whatyouhave/</loc>
-    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://pablo10diez2.github.io/tags/buffer-overflow/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/categories/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/categories/crypto/</loc>
+    <loc>https://pablo10diez2.github.io/tags/crypto/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/tags/crypto/</loc>
+    <loc>https://pablo10diez2.github.io/categories/cryptography/</loc>
+    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/basiclll/</loc>
+    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/writeups/l3akctf/shirohero/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/tags/exploitation/</loc>
@@ -53,7 +59,10 @@
     <loc>https://pablo10diez2.github.io/tags/math/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/categories/pwn/</loc>
+    <loc>https://pablo10diez2.github.io/categories/system-architecture/</loc>
+    <lastmod>2025-07-14T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/writeups/0xfunctf/whatyouhave/</loc>
     <lastmod>2025-07-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/tags/</loc>
@@ -65,19 +74,16 @@
     <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/64-bits/</loc>
     <lastmod>2025-04-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/categories/reversing/</loc>
-    <lastmod>2025-04-21T00:00:00+00:00</lastmod>
+    <loc>https://pablo10diez2.github.io/tags/cantor/</loc>
+    <lastmod>2025-04-19T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/tags/cryptography/</loc>
+    <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/baby-rsa2/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/writeups/dawgctf/cantorspairadox/</loc>
-    <lastmod>2025-04-19T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://pablo10diez2.github.io/tags/cantor/</loc>
-    <lastmod>2025-04-19T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://pablo10diez2.github.io/tags/cryptography/</loc>
     <lastmod>2025-04-19T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/tags/rsa/</loc>

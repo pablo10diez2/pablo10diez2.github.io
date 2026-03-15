@@ -9,24 +9,17 @@
     <lastBuildDate>Mon, 14 Jul 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Crypto</title>
-      <link>https://pablo10diez2.github.io/categories/crypto/</link>
+      <title>Cryptography</title>
+      <link>https://pablo10diez2.github.io/categories/cryptography/</link>
       <pubDate>Mon, 14 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>https://pablo10diez2.github.io/categories/crypto/</guid>
+      <guid>https://pablo10diez2.github.io/categories/cryptography/</guid>
       <description></description>
     </item>
     <item>
-      <title>Pwn</title>
-      <link>https://pablo10diez2.github.io/categories/pwn/</link>
+      <title>System Architecture</title>
+      <link>https://pablo10diez2.github.io/categories/system-architecture/</link>
       <pubDate>Mon, 14 Jul 2025 00:00:00 +0000</pubDate>
-      <guid>https://pablo10diez2.github.io/categories/pwn/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Reversing</title>
-      <link>https://pablo10diez2.github.io/categories/reversing/</link>
-      <pubDate>Mon, 21 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://pablo10diez2.github.io/categories/reversing/</guid>
+      <guid>https://pablo10diez2.github.io/categories/system-architecture/</guid>
       <description></description>
     </item>
   </channel>
