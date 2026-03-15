@@ -9,11 +9,11 @@
     <lastBuildDate>Sun, 15 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>C&#43;&#43; *type_traits*, from a multithreading prespective</title>
+      <title>C&#43;&#43; *type_traits*, from a multithreading perspective</title>
       <link>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</link>
       <pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate>
       <guid>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</guid>
-      <description>&lt;h1 id=&#34;c-type_-from-a-multithreading-prespective&#34;&gt;&#xA;  C++ &lt;em&gt;type_traits&lt;/em&gt;, from a multithreading prespective&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-type_-from-a-multithreading-prespective&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&amp;rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how this library could help with a basic concurrency problem.&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;c-type_-from-a-multithreading-perspective&#34;&gt;&#xA;  C++ &lt;em&gt;type_traits&lt;/em&gt;, from a multithreading perspective&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-type_-from-a-multithreading-perspective&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&amp;rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how this library could help with a basic concurrency problem.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Fluid Simulation SPH</title>
