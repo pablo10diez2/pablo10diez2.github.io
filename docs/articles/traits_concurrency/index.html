@@ -9,13 +9,13 @@
   #
   
 
-C&#43;&#43;11 was the first C&#43;&#43; standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how this library could help with a basic concurrency problem.">
+C&#43;&#43;11 was the first C&#43;&#43; standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how the std::type_traits library can help with a basic concurrency problem.">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/docs/articles/traits_concurrency/">
   <meta property="og:site_name" content="Pablo Díez">
   <meta property="og:title" content="C&#43;&#43; *type_traits*, from a multithreading perspective">
-  <meta property="og:description" content="C&#43;&#43; type_traits, from a multithreading perspective # C&#43;&#43;11 was the first C&#43;&#43; standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system’s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how this library could help with a basic concurrency problem.">
+  <meta property="og:description" content="C&#43;&#43; type_traits, from a multithreading perspective # C&#43;&#43;11 was the first C&#43;&#43; standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system’s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how the std::type_traits library can help with a basic concurrency problem.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="article">
     <meta property="article:section" content="docs">
@@ -27,7 +27,7 @@ C&#43;&#43;11 was the first C&#43;&#43; standard to introduce concurrency. Befor
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/traits_concurrency/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.a71217edb853f6b1567b25d111438ec9f692e94350a0ce1433a6ed871e06336c.js" integrity="sha256-pxIX7bhT9rFWeyXREUOOyfaS6UNQoM4UM6bthx4GM2w=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.00f9cdcba2ff9781e678daca6bb38cf451f9c20adefc538cb0983200618e969e.js" integrity="sha256-APnNy6L/l4HmeNrKa7OM9FH5wgre/FOMsJgyAGGOlp4=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -363,15 +363,15 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#c-type_-from-a-multithreading-perspective">#</a>
   
 </h1>
-<p>C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how this library could help with a basic concurrency problem.</p>
-<p>A common operation that you might want to do with a stack container is: deleting something from it, and depending on the value do something with it.</p>
+<p>C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how the <em><strong>std::type_traits</strong></em> library can help with a basic concurrency problem.</p>
+<p>A common operation that you might want to do with a stack container is: deleting something from it, and depending on the value performing some kind of operation.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> my_stack.top();
 </span></span><span style="display:flex;"><span>my_stack.pop();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(a <span style="color:#f92672">==</span> <span style="color:#ae81ff">10</span>){ do_something(); }
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>{ do_something_else(); }
-</span></span></code></pre></div><p>This is very straightforward. However, what happens when two threads are performing this same operations at the same time? Well, it depends on the operation they are performing, according to the standard if we call the top function at the same time, from two different threads, it&rsquo;s safe since we are just reading. But what about the above sequence?</p>
-<p>Let&rsquo;s assume that the object&rsquo;s implements an internal <em><strong>std::mutex</strong></em> that protects each individual call function, is that enough? Well, not really. Even with that kind of protection the logic could remain like this:</p>
+</span></span></code></pre></div><p>This is very straightforward. However, what happens when two threads are performing operations at the same time? Well, it depends on the operation they are performing, according to the standard if we just call the top function at the same time, from two different threads, it&rsquo;s safe since we are just reading. But what about the previously presented sequence?</p>
+<p>Let&rsquo;s assume that the objects implement an internal <em><strong>std::mutex</strong></em> that protects each individual call function, is that enough? Well, not really. Even with that kind of protection the logic could remain like this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#Thread A performs:
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> my_stack.top();
 </span></span><span style="display:flex;"><span>
