@@ -27,7 +27,7 @@ C&#43;&#43;11 was the first C&#43;&#43; standard to introduce concurrency. Befor
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/traits_concurrency/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.00f9cdcba2ff9781e678daca6bb38cf451f9c20adefc538cb0983200618e969e.js" integrity="sha256-APnNy6L/l4HmeNrKa7OM9FH5wgre/FOMsJgyAGGOlp4=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.421fe9718c5eba1c3076d03e8a2dd4fd4b9c95211a170c62ae17aad0481c20c8.js" integrity="sha256-Qh/pcYxeuhwwdtA&#43;ii3U/UuclSEaFwxirheq0EgcIMg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -397,7 +397,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
 </span></span></code></pre></div><p>What if the copy fails? We might not have enough memory to allocate all the vector. And if line 2 fails but we still drop it from the stack, have we just lost the value? What are we going to return then?
 Actually even if in line 4 it might seem that we are making another copy for returning the value, there are some optimizations that can avoid it, such as using <em><strong>std::move</strong></em>.</p>
-<p>This are some reasons why the pop and top functions are separated. Even with that, if we want to take this approach and implement them together, we need to make sure that the object we are trying to return doesn&rsquo;t throw a copy or move exception, and we need to know it at compile time.</p>
+<p>These are some reasons why the pop and top functions are separated. Even with that, if we want to take this approach and implement them together, we need to make sure that the object we are trying to return doesn&rsquo;t throw a copy or move exception, and we need to know it at compile time.</p>
 <p>Finally, this is where <em><strong>std::type_traits</strong></em> comes into play. This is a library feature that fortunately for us, was introduced in C++11 (seems like the <em>ISO working group</em> folks are very smart). With it we can do exactly what we were looking for thanks to their <em><strong>is_nothrow_copy_constructible</strong></em> and <em><strong>is_nothrow_move_constructible</strong></em>.</p>
 <p>I know what you are thinking right now, what about the objects that aren&rsquo;t of this kind? Well, that is one of the traits (no pun intended) of this implementation. Common nothrow copy constructors are primitive types. Even <em><strong>std::vector</strong></em> can be of type <em><strong>is_nothrow_move_constructible</strong></em> if their contents are, but still there is no guarantee.</p>
 <p>As in most cases, the best implementation depends on the use cases. If you are working with just trivial types this might be a wise choice. Some other implementations make use of a <em><strong>std::shared_ptr</strong></em>, the approach Anthony Williams proposes in his book (C++ concurrency in Action), from where I&rsquo;ve taken the idea for this article.</p>
