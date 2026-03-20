@@ -27,7 +27,7 @@ When writing multithreaded applications there is an inevitable class that will o
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/guard_vs_unique/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.82288097bf1fa78a33128b860bf11f5f41161b923cb4182289c3744275bcd511.js" integrity="sha256-giiAl78fp4ozEouGC/EfX0EWG5I8tBgiicN0QnW81RE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.92050271f8f9a0a88ece27d58a17ca759278c9589f8e82de48972486e8fe61a2.js" integrity="sha256-kgUCcfj5oKiOzifVihfKdZJ4yVifjoLeSJckhuj&#43;YaI=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -428,7 +428,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span></code></pre></div><p>Maybe a more complex schema where the usefulness of the ownership transfer can be seen is handing over the task to another thread. Executing the second part there, and not just in another function.</p>
 <p>This wouldn&rsquo;t be possible with a regular <em>lock_guard</em>, because the mutex would be unlocked when the <em>preprocess_data()</em> function returned. That would leave a gap for vulnerabilities until we locked again the mutex.</p>
 <p>Is worth mentioning that <em>unique_lock</em> is neither <em>CopyConstructible</em> nor <em>CopyAssignable</em> and that this whole ownership transfer can be a bit tricky to understand in C++. In our case we didn&rsquo;t have to specify <em><strong>std::move</strong></em> when returning because of how <em>rvalue</em>s and <em>lvalue</em>s work. So I suggest you take a look on how they work.</p>
-<p>Anyway, there are multiple ways for locking a <em><strong>std::mutex</strong></em> that we haven&rsquo;t covered here. I leave you here a small chart that I&rsquo;ve found in this geeksforgeeks <a href="https://www.geeksforgeeks.org/cpp/stdunique_lock-or-stdlock_guard-which-is-better/">article</a>.</p>
+<p>Anyway, there are multiple ways for locking a <em><strong>std::mutex</strong></em> that we haven&rsquo;t covered here. I leave you here a small chart that I&rsquo;ve found in this geeksforgeeks <a href="https://www.geeksforgeeks.org/cpp/stdunique_lock-or-stdlock_guard-which-is-better/">article</a> for the two that we&rsquo;ve covered.</p>
 <p><img src="/images/chartLU.png" alt="pic1" /></p>
 </article>
  
