@@ -1,0 +1,74 @@
+---
+title: "C++ *lock_guard* vs *unique_lock*"
+date: 2026-03-19
+weight: 1
+---
+# C++ *type_traits*, from a multithreading perspective
+
+C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system's API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how the ***std::type_traits*** library can help with a basic concurrency problem.
+
+A common operation that you might want to do with a stack container is: deleting something from it, and depending on the value performing some kind of operation.
+
+```C++
+int a = my_stack.top();
+my_stack.pop();
+
+if(a == 10){ do_something(); }
+else{ do_something_else(); }
+```
+
+This is very straightforward. However, what happens when two threads are performing operations at the same time? Well, it depends on the operation they are performing, according to the standard if we just call the top function at the same time, from two different threads, it's safe since we are just reading. But what about the previously presented sequence?
+
+Let's assume that the objects implement an internal ***std::mutex*** that protects each individual call function, is that enough? Well, not really. Even with that kind of protection the logic could remain like this:
+
+```C++
+#Thread A performs:
+int a = my_stack.top();
+
+#Thread B performs:
+int b = my_stack.top();
+
+#Thread A performs:
+my_stack.pop();
+
+#Thread B performs:
+my_stack.pop();
+
+```
+
+I guess you can alredy see the problem here. Even with the protection of a mutex, that would guarantee that the operations aren't done at the same time, there is still a logic problem. Both threads have saved the same variable, leading to a disconnection between the value saved and the one popped by Thread B.
+
+Despite thinking that this is a very foolish snippet of code it's not that unsual to make this kind of mistake. You are seeing a sequential view of both threads in a pseude-code with comments, you will not have the same view in your IDE. Sometimes we get so caught up with the advanced stuff like atomic operations, that we forget to revise the logic of our code.
+
+An answer to this might be modifying pop, so that it returns the value that it was deleted. As simple as it may sound, this could lead to trouble. Take a look at the following snippet of code:
+
+```C++
+int deleted_value = my_stack.pop();
+```
+
+With our new merged pop/top function, we are returning the value, in this case a simple integer. What about some more complex data structures?
+
+```C++
+std::vector<int> deleted_value = my_stack.pop();
+```
+
+This is actually not a very safe thing to do. Internally we are copying a vector.
+
+```C++
+std::vector<int> modified_pop(){ // 1
+    auto copy = my_stack.top(); // 2 Makes a copy
+    my_stack.pop() // 3
+    return copy; // 4
+}
+```
+
+What if the copy fails? We might not have enough memory to allocate all the vector. And if line 2 fails but we still drop it from the stack, have we just lost the value? What are we going to return then?
+Actually even if in line 4 it might seem that we are making another copy for returning the value, there are some optimizations that can avoid it, such as using ***std::move***.
+
+These are some reasons why the pop and top functions are separated. Even with that, if we want to take this approach and implement them together, we need to make sure that the object we are trying to return doesn't throw a copy or move exception, and we need to know it at compile time.
+
+Finally, this is where ***std::type_traits*** comes into play. This is a library feature that fortunately for us, was introduced in C++11 (seems like the *ISO working group* folks are very smart). With it we can do exactly what we were looking for thanks to their ***is_nothrow_copy_constructible*** and ***is_nothrow_move_constructible***.
+
+I know what you are thinking right now, what about the objects that aren't of this kind? Well, that is one of the traits (no pun intended) of this implementation. Common nothrow copy constructors are primitive types. Even ***std::vector*** can be of type ***is_nothrow_move_constructible*** if their contents are, but still there is no guarantee.
+
+As in most cases, the best implementation depends on the use cases. If you are working with just trivial types this might be a wise choice. Some other implementations make use of a ***std::shared_ptr***, the approach Anthony Williams proposes in his book (C++ concurrency in Action), from where I've taken the idea for this article.

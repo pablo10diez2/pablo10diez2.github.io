@@ -9,13 +9,6 @@
     <lastBuildDate>Sun, 15 Mar 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>C&#43;&#43; *type_traits*, from a multithreading perspective</title>
-      <link>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</link>
-      <pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</guid>
-      <description>&lt;h1 id=&#34;c-type_-from-a-multithreading-perspective&#34;&gt;&#xA;  C++ &lt;em&gt;type_traits&lt;/em&gt;, from a multithreading perspective&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-type_-from-a-multithreading-perspective&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&amp;rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how the &lt;em&gt;&lt;strong&gt;std::type_traits&lt;/strong&gt;&lt;/em&gt; library can help with a basic concurrency problem.&lt;/p&gt;</description>
-    </item>
-    <item>
       <title>Fluid Simulation SPH</title>
       <link>https://pablo10diez2.github.io/docs/projects/fluid/</link>
       <pubDate>Tue, 10 Feb 2026 00:00:00 +0000</pubDate>
@@ -28,6 +21,20 @@
       <pubDate>Tue, 20 Jan 2026 00:00:00 +0000</pubDate>
       <guid>https://pablo10diez2.github.io/docs/projects/lepicasso/</guid>
       <description>&lt;h1 id=&#34;le-picasso&#34;&gt;&#xA;  Le-Picasso&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#le-picasso&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;strong&gt;Le-Picasso&lt;/strong&gt; is an end-to-end project that allows users to control a robotic arm (SO-100) and make it draw objects using just their voice. This project was developed during the &lt;strong&gt;LeRobot Bilbao Hackathon&lt;/strong&gt; with my colleagues &lt;a href=&#34;https://lingfeng.work&#34;&gt;Lingfeng&lt;/a&gt;, &lt;a href=&#34;https://www.linkedin.com/in/dani-suso-40263423b/&#34;&gt;Dani&lt;/a&gt;, &lt;a href=&#34;https://vasileandreipopan.com&#34;&gt;Andrei&lt;/a&gt; and &lt;a href=&#34;https://none3075.github.io/&#34;&gt;Martín&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;Highlight: End-to-end pipeline combining real-time NLP, robotics and a web interface.&lt;/p&gt;&#xA;&lt;h2 id=&#34;how-it-works&#34;&gt;&#xA;  How it works&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#how-it-works&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h2&gt;&#xA;&lt;p&gt;The architecture connects a user-friendly frontend with advanced AI audio processing and physical hardware execution:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>C&#43;&#43; *lock_guard* vs *unique_lock*, use cases</title>
+      <link>https://pablo10diez2.github.io/docs/articles/guard_vs_unique/</link>
+      <pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://pablo10diez2.github.io/docs/articles/guard_vs_unique/</guid>
+      <description>&lt;h1 id=&#34;c-lock_-vs-unique_-use-cases&#34;&gt;&#xA;  C++ &lt;em&gt;lock_guard&lt;/em&gt; vs &lt;em&gt;unique_lock&lt;/em&gt;, use cases&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-lock_-vs-unique_-use-cases&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;When writing multithreaded applications there is an inevitable class that will often need to be used in our code, &lt;em&gt;&lt;strong&gt;std::mutex&lt;/strong&gt;&lt;/em&gt;. This is a synchronization class that is used to protect shared data from being accessed by multiple threads at the same time. If you don&amp;rsquo;t know much about it, you can either read what they are &lt;a href=&#34;geeksforgeeks.org/cpp/std-mutex-in-cpp/&#34;&gt;here&lt;/a&gt;, or be content with the definition that a mutex is like a padlock.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>C&#43;&#43; *type_traits*, from a multithreading perspective</title>
+      <link>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</link>
+      <pubDate>Sun, 15 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://pablo10diez2.github.io/docs/articles/traits_concurrency/</guid>
+      <description>&lt;h1 id=&#34;c-type_-from-a-multithreading-perspective&#34;&gt;&#xA;  C++ &lt;em&gt;type_traits&lt;/em&gt;, from a multithreading perspective&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-type_-from-a-multithreading-perspective&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;C++11 was the first C++ standard to introduce concurrency. Before that the only way to have multiple threads running was with external libraries or calling the operating system&amp;rsquo;s API. Since then, the standard has come a long way, evolving and meeting the needs of its users. Today I would like to bring you back to the basics, and show how the &lt;em&gt;&lt;strong&gt;std::type_traits&lt;/strong&gt;&lt;/em&gt; library can help with a basic concurrency problem.&lt;/p&gt;</description>
     </item>
     <item>
       <title>BasicLLL</title>
