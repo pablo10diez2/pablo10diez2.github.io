@@ -39,7 +39,7 @@ The function template std::async runs the function f asynchronously (potentially
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/async_futures/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.c78640292a8e2872d2b0eddeaca36e48119dbd0b34369f9efb749a21ce7408bd.js" integrity="sha256-x4ZAKSqOKHLSsO3erKNuSBGdvQs0Np&#43;e&#43;3SaIc50CL0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.3e4e1854f9ce072805c3a463c9d941dbaa38a4c4a14861f23c7f5be6a43fb813.js" integrity="sha256-Pk4YVPnOBygFw6RjydlB26o4pMShSGHyPH9b5qQ/uBM=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -444,7 +444,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Adding both results: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> num <span style="color:#f92672">+</span> f1.get() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
 </span></span></code></pre></div><p><em>Note that we are not taking into account exceptions, or other behaviours that would cause the code to fail.</em></p>
-<p>This is much better, we execute both functions at the same time. Still, if by the time we try to add the two values, <em>foo()</em> is still executing we are going to block our thread until it&rsquo;s finished. One of the drawbacks is that you have to time when the results will be ready for using them, if you fail to do so, you will block the thread waiting for it.</p>
+<p>This is much better, we execute both functions at the same time. Still, if by the time we try to add the two values, <em>foo()</em> is still executing we are going to block our thread until it&rsquo;s finished. One of the drawbacks is that you have to time when the results will be ready for using them, if you fail to do so, you will block.</p>
 <h3 id="2-the-issue">
   <strong>2) The issue</strong>
   
@@ -476,7 +476,7 @@ https://github.com/alex-shpak/hugo-book
 <p>The funny part is that this is just for <em>async</em>. From <a href="https://en.cppreference.com/w/cpp/thread/async.html">cppreference</a>: &ldquo;Note that the destructors of std::futures obtained by means other than a call to std::async never block.&rdquo; Why just with this function?</p>
 <p>Well it&rsquo;s not like we have discovered anything, this issue has been pointed by various WG21 (the C++ committee) members and discussed at meetings.</p>
 <p>This goes back to 2008, when C++11, or C++0x at the time, was still being drafted. Threads were going to be introduced, as with any new feature, decisions have to be taken about how they are going to be implemented, what the standard guarantees and what not, along many other things.</p>
-<p>One of the decisions that was taken, was to describe the destructor of a thread like this:</p>
+<p>One of the decisions that was taken, was to define the destructor of a thread like this:</p>
 
 <blockquote class='book-hint '>
   <p>If <em>joinable()</em> then <em>detach()</em>, otherwise no effects. [Note: Destroying a joinable thread can be unsafe if the thread accesses objects or the standard library unless the thread performs explicit synchronization to ensure that it does not access the objects or the standard library past their respective lifetimes. Terminating the process with <em>_exit</em> or <em>quick_exit</em> removes some of these obligations. - end note]</p>
@@ -490,7 +490,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#75715e">//...
 </span></span></span></code></pre></div><p>With the initial approach the thread would be detached, since it would never reach the <em>join()</em> because of the thrown exception. He proposed various solutions like: a guard to join automatically (similar to the ones for <em><strong>std::mutex</strong></em>), making that threads only have access to permanent objects or replacing <em>detach()</em> with a call to <em>terminate</em>. This last one being the most sensible decision.</p>
 <p>The proposal was accepted by the committee and made it to C++11, and it&rsquo;s how threads act to this day.</p>
-<p>Remember that <em>async</em> is just a higher level, more abstract and easy to use type of concurrent task, that is wrapping a <em>thread</em>. But, instead of terminating if <em>joinable()</em>, they went with the <em>join()</em> approach.</p>
+<p>Remember that <em>async</em> is just a higher level, more abstract and easy to use type of concurrent task, that is wrapping a <em>thread</em>. But, instead of <em>terminate()</em> if <em>joinable()</em>, they went with the <em>join()</em> approach.</p>
 <p>If you read Hans Boehm&rsquo;s defense for this in <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3679.html">N3679: Async() future destructors must wait</a> it makes sense. Detaching a thread is a dangerous move, so it should be explicitly done by the programmer, if not, waiting should be the default. And obviously, a supposedly friendly interface like <em>async</em>, should have that default behaviour.</p>
 <p>The dilemma comes from another place. Herb Sutter complained about it in 2013, <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3630.pdf">N3630 async, ~future, and ~thread (Revision 1)</a>, that this shouldn&rsquo;t be the deafult behaviour. Why? Because there is no way to know if a future is coming from <em>async</em> or other function.</p>
 <p>Imagine you make a call to a function that belongs to a library, like this:</p>
@@ -507,9 +507,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>The above code, lets say you launch a task that might take a lot of resources and time. You try to call it beforehand, because you think that there is a high chance that you will need it. If it ends up not happening and the implementation is done with <em>async</em>, you will block at the return.</p>
-<p>People like Herb Sutter were defending the composability. Saying that <em>future</em> should be a non blocking composable type, but <em>async</em> was poisoning it. All thisi was discussed in a meeting in Santa Clara, <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3709.html">N3709: Minutes for July 2013 Santa Clara SG1 Meeting</a>.</p>
+<p>People like Herb Sutter were defending the composability. Saying that <em>future</em> should be a non blocking composable type, but <em>async</em> was poisoning it. All this was discussed in a meeting in Santa Clara, <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3709.html">N3709: Minutes for July 2013 Santa Clara SG1 Meeting</a>.</p>
 <p><em>SG1 is the group of the C++ committee that focuses on concurrency</em></p>
-<p><em>Composable programming is a software design approach that treats code as modular, independent, and reusable components that can be assembled in various combinations to build complex systems. It emphasizes small, stateless, or self-contained pieces that communicate via APIs, allowing for high flexibility, scalability, and easy replacement of functionality.</em></p>
+<p><em>Composable programming is a software design approach that treats code as modular, independent, and reusable components that can be assembled in various combinations to build complex systems. It emphasizes small, stateless, or self-contained pieces that communicate via APIs, allowing for high flexibility, scalability, and easy replacement of functionality.</em> -Wikipedia</p>
 <p>You can read the transcript of the meeting, I will quote some interesting parts.</p>
 
 <blockquote class='book-hint '>
@@ -535,7 +535,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span><span style="color:#75715e">//It would have to be rewritten to this:
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//std::waiting_future&lt;int&gt; f1 = std::async(...);
 </span></span></span></code></pre></div><p>And as Chandler says, is a very big thing to force. Breaking the API wasn&rsquo;t in the interest of the committee. Deprecating it seemed like an option, but without any good proposal they would be removing a tool without offering a new one.</p>
-<p>They realized that they hit a wall, they weren&rsquo;t able to provide a good enough solution that did little damage. So, it had to stay. So, it was kept there because of a retrocompatibility issue.</p>
+<p>They realized that they hit a wall, they weren&rsquo;t able to provide a good enough solution that did little damage. So, it had to stay, it was kept there because of a retrocompatibility issue.</p>
 <p>Instead of fixing it, the plan was to offer new tools, in the hope of <em>async</em> being <em>soft deprecated</em> with the time. No changes were made related to this for C++14 or C++17, but with C++20 we got a new type of threads, <em>jthread</em>, that <em>join()</em> instead of terminating. <em>stop_token</em> and <em>co_await</em> were also added, this provided a way to destroy and suspend tasks.</p>
 <p>Some other features were added but the most important one is coming now in C++26. The execution control library. This is not any regular feature, it&rsquo;s a whole framework for managing asynchronous tasks in a composable way. It seems like Herb&rsquo;s desire finally materialized! Quoting him:</p>
 
