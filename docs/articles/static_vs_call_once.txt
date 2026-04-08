@@ -1,0 +1,138 @@
+---
+title: "C++ *call once* vs *static* for multithreaded singletons"
+date: 2026-03-26
+weight: 1
+---
+# C++ *call_once* vs *static* for multithreaded singletons
+
+Before getting into it we need to know what a singleton is. According to one of the most popular pages for software design patterns [refactoring guru](https://refactoring.guru/design-patterns/singleton/cpp/example): 
+
+*A Singleton is a creational design pattern, which ensures that only one object of its kind exists and provides a single point of access to it for any other code.*
+
+This means, having just one instance of an object. It's used mainly for shared resources, being the most popular one the logger. There is a lot of controversy regarding the use of Singletons, wether they are abused, or not that useful in most cases. This article is not about design patterns and we won't be covering that part of the discussion. I have choosen this topic just for the shake of an example where I can speak about *call_once* and *static* on a concurrent scenario.
+
+Now, knowing that, lets try to code the most simple Singleton example.
+
+```C++
+#include <iostream>
+
+class My_singleton{
+    private:
+        static My_singleton* my_singleton;
+        int number;
+
+        My_singleton(int number_) : number(number_) {}
+
+    public:
+        My_singleton operator=(const My_singleton& other) = delete;
+        My_singleton(My_singleton& other) = delete;
+
+        int getValue(){
+            return this->number;
+        }
+
+        static My_singleton* getInstance(const int number);
+};
+
+My_singleton* My_singleton::my_singleton = nullptr;
+
+My_singleton* My_singleton::getInstance(const int number){
+    if(my_singleton == nullptr){
+        my_singleton = new My_singleton(number);
+    }
+    return my_singleton;
+}
+
+int main(){
+    My_singleton* sig1 = My_singleton::getInstance(10);
+    My_singleton* sig2 = My_singleton::getInstance(20);
+
+    std::cout << sig1->getValue();
+    std::cout << sig2->getValue();
+
+    return 0;
+}
+```
+
+This is a very basic implementation. Our function *getInstance()* checks if there is any created, if there isn't it calls the constructor. Note that there aren't any public constructors, the only way of getting this class is by calling that function. The code outputs: 1010. Meaning that the second time we called *getInstance()* it didn't create another object, and used the alredy available one. That's why 20 is printed nowhere.
+
+Is this code safe for concurrency? Well, lets test it.
+
+```C++
+#include <thread>
+#include <iostream>
+
+//... I've skipped the implementation since it's the same as above
+
+void func(int number){
+    My_singleton* sig = My_singleton::getInstance(number);
+    std::cout << sig->getValue();
+}
+
+int main(){
+    std::thread t1(func, 10);
+    std::thread t2(func, 20);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+```
+
+The output for this code is: 1020. So we've created 2 different instances of *My_singleton*, this implementation is not thread-safe. Lets try to implement a better solution:
+
+```C++
+#include <thread>
+#include <iostream>
+#include <mutex>
+
+class My_singleton{
+    private:
+        static My_singleton* my_singleton;
+        static std::mutex mtx;
+
+        int number;
+
+        My_singleton(int number_) : number(number_) {}
+
+    public:
+        My_singleton operator=(const My_singleton& other) = delete;
+        My_singleton(My_singleton& other) = delete;
+
+        int getValue(){
+            return this->number;
+        }
+
+        static My_singleton* getInstance(const int number);
+};
+
+My_singleton* My_singleton::my_singleton = nullptr;
+std::mutex My_singleton::mtx;
+
+My_singleton* My_singleton::getInstance(const int number){
+    std::lock_guard<std::mutex> lock(mtx);
+
+    if(my_singleton == nullptr){
+        my_singleton = new My_singleton(number);
+    }
+    return my_singleton;
+}
+
+void func(int number){
+    My_singleton* sig = My_singleton::getInstance(number);
+    std::cout << sig->getValue();
+}
+
+int main(){
+    std::thread t1(func, 10);
+    std::thread t2(func, 20);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+```
+
+We are now adding a static mutex (short for mutual exclusion) to ensure that only one thread accesses the  *getInstance()* function at a time. If you want to know more about *lock_guard* you can check this [article](https://pablodiez.dev/docs/articles/guard_vs_unique/) that I wrote.

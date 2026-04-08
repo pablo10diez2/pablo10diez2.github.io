@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  How async and future::~future shaped modern concurrency in C&#43;&#43;
+  
+  #
+  
+
+One of the ways to perform parallel tasks is using the standard library function std::async. This was introduced in the C&#43;&#43;11 standard, alongside multiple concurrency features as a high level interface. If you are alredy familiar with this function I suggest you skip the brief introduction.
+
+  1) Introduction to async
+  
+  #
+  
+
+According to cppreference.com:
+
+
+  The function template std::async runs the function f asynchronously (potentially in a separate thread which might be part of a thread pool).">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/docs/articles/async_futures/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="How *async* and *future::~future* shaped modern concurrency in C&#43;&#43;">
+  <meta property="og:description" content="How async and future::~future shaped modern concurrency in C&#43;&#43; # One of the ways to perform parallel tasks is using the standard library function std::async. This was introduced in the C&#43;&#43;11 standard, alongside multiple concurrency features as a high level interface. If you are alredy familiar with this function I suggest you skip the brief introduction.
+1) Introduction to async # According to cppreference.com:
+The function template std::async runs the function f asynchronously (potentially in a separate thread which might be part of a thread pool).">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+    <meta property="article:published_time" content="2026-04-08T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-04-08T00:00:00+00:00">
+<title>How *async* and *future::~future* shaped modern concurrency in C&#43;&#43; | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/async_futures/">
+<link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.c78640292a8e2872d2b0eddeaca36e48119dbd0b34369f9efb749a21ce7408bd.js" integrity="sha256-x4ZAKSqOKHLSsO3erKNuSBGdvQs0Np&#43;e&#43;3SaIc50CL0=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Articles</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/async_futures/" class="active">How <em>async</em> and <em>future::~future</em> shaped modern concurrency in C++</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/guard_vs_unique/" class="">C++ <em>lock_guard</em> vs <em>unique_lock</em>, use cases</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/traits_concurrency/" class="">C++ <em>type_traits</em>, from a multithreading perspective</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/fluid/" class="">Fluid Simulation SPH</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/lepicasso/" class="">Le-Picasso</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>0xfun Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">System Architecure - What you have</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">Cryptography - BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">Cryptography - Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">System architecture - 64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">Cryptography - Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">Cryptography - Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>How *async* and *future::~future* shaped modern concurrency in C&#43;&#43;</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-introduction-to"><strong>1) Introduction to <em>async</em></strong></a></li>
+        <li><a href="#2-the-issue"><strong>2) The issue</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="how-async-and-future-shaped-modern-concurrency-in-c">
+  How <em>async</em> and <em>future::~future</em> shaped modern concurrency in C++
+  
+  <a class="anchor" href="#how-async-and-future-shaped-modern-concurrency-in-c">#</a>
+  
+</h1>
+<p>One of the ways to perform parallel tasks is using the standard library function <em><strong>std::async</strong></em>. This was introduced in the C++11 standard, alongside multiple concurrency features as a high level interface. If you are alredy familiar with this function I suggest you skip the brief introduction.</p>
+<h3 id="1-introduction-to">
+  <strong>1) Introduction to <em>async</em></strong>
+  
+  <a class="anchor" href="#1-introduction-to">#</a>
+  
+</h3>
+<p>According to <a href="https://en.cppreference.com/w/cpp/thread/async.html">cppreference.com</a>:</p>
+
+<blockquote class='book-hint '>
+  <p>The function template std::async runs the function f asynchronously (potentially in a separate thread which might be part of a thread pool).</p>
+</blockquote><p>The reason why possibility is expressed, it&rsquo;s because unless you provide a <em>launch</em> flag it&rsquo;s up to the function to launch a new thread of execution.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">auto</span> f1 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo); <span style="color:#75715e">//Will be executed on a different thread
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">auto</span> f2 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(foo); <span style="color:#75715e">//No guarantee
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//...
+</span></span></span></code></pre></div><p>There is another launch flag for async and some other details, but there are not relevant to the story. The interesting part, that was what made me want to write this article, are those f1 and f2 variables. These are declared with the keyword auto, but what are they under the hood?</p>
+<p><em>async</em> returns the results of the function they are executing with <em><strong>std::future</strong></em>. Take a look at the following snippet of code. We launch a thread that will execute <em>foo()</em>, wait for the int, and retrieve the value to print it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>future<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> f1 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>f1.wait();
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Done! Result: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> f1.get() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span></code></pre></div><p>Actually, the <em>get()</em> method is already blocking, so we can skip it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> f1 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Done! Result: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> f1.get() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span></code></pre></div><p>The two examples above aren&rsquo;t really very good. We are sending <em>foo()</em> to another thread, while we do nothing. A better way of taking advantaje of parallelism, (of course, if we wanted to, concurrency is not always about performance) would be like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>future<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> f1 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> num <span style="color:#f92672">=</span> foo2();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Adding both results: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> num <span style="color:#f92672">+</span> f1.get() <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span></code></pre></div><p><em>Note that we are not taking into account exceptions, or other behaviours that would cause the code to fail.</em></p>
+<p>This is much better, we execute both functions at the same time. Still, if by the time we try to add the two values, <em>foo()</em> is still executing we are going to block our thread until it&rsquo;s finished. One of the drawbacks is that you have to time when the results will be ready for using them, if you fail to do so, you will block the thread waiting for it.</p>
+<h3 id="2-the-issue">
+  <strong>2) The issue</strong>
+  
+  <a class="anchor" href="#2-the-issue">#</a>
+  
+</h3>
+<p>Now that you have some basic knowledge of how they work we can get into the interesting part. Take a look at the following snippet of code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo1); <span style="color:#75715e">// #1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo2); <span style="color:#75715e">// #2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//...
+</span></span></span></code></pre></div><p>How do you think this code will be run? From what we have learnt above, these two functions should be launched on separate threads, and per se, executed at the same time. In reality this code will always be executed synchronously. Why? The reason is very simple and it has to do with the following:</p>
+<ol>
+<li>We are not saving the return value anywhere (the <em>future</em>).</li>
+<li><em>async</em> demands that future::~future blocks.</li>
+</ol>
+<p>I think the first one is easy to understand, in the previous code we are ignoring the return. But what does the second one mean? And how is it related to not saving the value?</p>
+<p>That statement alone is simple, when the destructor of <em>future</em> is called, it has to wait (while blocking) for the function to finish and then proceed to destroy it. What happens when we don&rsquo;t save the future? That the destructor is called right away, this blocks the thread.</p>
+<p>In our example the intended use was to execute concurrently <em>foo1</em> and <em>foo2</em>. Instead, <em>foo1</em> will start executing in a new thread, but before even leaving line #1, it realizes that the destructor needs to be called, thus it will wait there (blocking the current thread) till it has finished, to destroy the object. The same will happen at line #2.</p>
+<p>Even if we saved the second return, we would still be doomed to not executing concurrently.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo1);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> f2 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo2);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Executed sequentially, because we have already had to wait for foo1 to execute
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo1);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> f2 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo2);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> f3 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(std<span style="color:#f92672">::</span>launch<span style="color:#f92672">::</span>async, foo3);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Only f2 and f3 are executed concurrently, before that they have had to wait for foo1
+</span></span></span></code></pre></div><p>The solution is simple, always save the variable. Like that the destructor will be called when the variable goes out of scope, and not between these calls. On modern compilers you will even get a warning because it&rsquo;s marked with <em>[[nodiscard]]</em>.</p>
+<p>The funny part is that this is just for <em>async</em>. From <a href="https://en.cppreference.com/w/cpp/thread/async.html">cppreference</a>: &ldquo;Note that the destructors of std::futures obtained by means other than a call to std::async never block.&rdquo; Why just with this function?</p>
+<p>Well it&rsquo;s not like we have discovered anything, this issue has been pointed by various WG21 (the C++ committee) members and discussed at meetings.</p>
+<p>This goes back to 2008, when C++11, or C++0x at the time, was still being drafted. Threads were going to be introduced, as with any new feature, decisions have to be taken about how they are going to be implemented, what the standard guarantees and what not, along many other things.</p>
+<p>One of the decisions that was taken, was to describe the destructor of a thread like this:</p>
+
+<blockquote class='book-hint '>
+  <p>If <em>joinable()</em> then <em>detach()</em>, otherwise no effects. [Note: Destroying a joinable thread can be unsafe if the thread accesses objects or the standard library unless the thread performs explicit synchronization to ensure that it does not access the objects or the standard library past their respective lifetimes. Terminating the process with <em>_exit</em> or <em>quick_exit</em> removes some of these obligations. - end note]</p>
+</blockquote><p>Detaching just means separating the thread of execution from the object. This is dangerous for obvious reasons, the thread can outlive some parts of the code (if not all), thus possibly having access to dangling pointers and all the possible consequences of that.</p>
+<p>This was brought up by Hans Boehm in 2008 with <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2802.html">N2802: A plea to reconsider detach-on-destruction for thread objects</a>. He comments about how <em>thread</em> is not exception safe, and how even with a call to join at the end, an exception would cause the detach.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t1(foo);
+</span></span><span style="display:flex;"><span>func_that_throws();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>t1.join();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//...
+</span></span></span></code></pre></div><p>With the initial approach the thread would be detached, since it would never reach the <em>join()</em> because of the thrown exception. He proposed various solutions like: a guard to join automatically (similar to the ones for <em><strong>std::mutex</strong></em>), making that threads only have access to permanent objects or replacing <em>detach()</em> with a call to <em>terminate</em>. This last one being the most sensible decision.</p>
+<p>The proposal was accepted by the committee and made it to C++11, and it&rsquo;s how threads act to this day.</p>
+<p>Remember that <em>async</em> is just a higher level, more abstract and easy to use type of concurrent task, that is wrapping a <em>thread</em>. But, instead of terminating if <em>joinable()</em>, they went with the <em>join()</em> approach.</p>
+<p>If you read Hans Boehm&rsquo;s defense for this in <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3679.html">N3679: Async() future destructors must wait</a> it makes sense. Detaching a thread is a dangerous move, so it should be explicitly done by the programmer, if not, waiting should be the default. And obviously, a supposedly friendly interface like <em>async</em>, should have that default behaviour.</p>
+<p>The dilemma comes from another place. Herb Sutter complained about it in 2013, <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3630.pdf">N3630 async, ~future, and ~thread (Revision 1)</a>, that this shouldn&rsquo;t be the deafult behaviour. Why? Because there is no way to know if a future is coming from <em>async</em> or other function.</p>
+<p>Imagine you make a call to a function that belongs to a library, like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>future<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> f1 <span style="color:#f92672">=</span> do_some_work();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Is this code going to block? Well it depends, was it launched with <em>async</em> or <em>thread</em>? You just don&rsquo;t know. What if you have a GUI, you can&rsquo;t rely on not knowing if the call will block or not, you must remain responsive. The only possible way to know is looking at the source code of the library where the function is implemented.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>future<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> f1 <span style="color:#f92672">=</span> do_heavy_work();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//... more code 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(user_cancels()){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The above code, lets say you launch a task that might take a lot of resources and time. You try to call it beforehand, because you think that there is a high chance that you will need it. If it ends up not happening and the implementation is done with <em>async</em>, you will block at the return.</p>
+<p>People like Herb Sutter were defending the composability. Saying that <em>future</em> should be a non blocking composable type, but <em>async</em> was poisoning it. All thisi was discussed in a meeting in Santa Clara, <a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3709.html">N3709: Minutes for July 2013 Santa Clara SG1 Meeting</a>.</p>
+<p><em>SG1 is the group of the C++ committee that focuses on concurrency</em></p>
+<p><em>Composable programming is a software design approach that treats code as modular, independent, and reusable components that can be assembled in various combinations to build complex systems. It emphasizes small, stateless, or self-contained pieces that communicate via APIs, allowing for high flexibility, scalability, and easy replacement of functionality.</em></p>
+<p>You can read the transcript of the meeting, I will quote some interesting parts.</p>
+
+<blockquote class='book-hint '>
+  <p>Herb: there are two issues. Right now future is this type where i don&rsquo;t know what it will do; defeats composability. One solution to that from our proposal was to have separate future &amp; waiting_future types. What about std::async? that&rsquo;s much of a lesser problem bc you can deprecate it. Seems like there&rsquo;s an opportunity bc there&rsquo;s low usage</p>
+</blockquote>
+<blockquote class='book-hint '>
+  <p>Niklas: we can switch the names around. To the extent that libraries are using code, code will break no matter what. There doesn&rsquo;t seem to be a clean solution that avoids breaking existing code.</p>
+</blockquote>
+<blockquote class='book-hint '>
+  <p>Chandler: everyone intends std::future to be a non-blocking future. I&rsquo;m happy with deprecating std::async and including waiting_future if that&rsquo;s what people want.</p>
+</blockquote>
+<blockquote class='book-hint '>
+  <p>Herb: I just care that ~future doesn&rsquo;t block. It says that it doesn&rsquo;t unless it comes from std::async.</p>
+</blockquote>
+<blockquote class='book-hint '>
+  <p>Jeffrey: in the long run i would like to deprecate std::async. A bunch of functions are written assuming that ~future doesn&rsquo;t block. Some instances violate that precondition. It would be nice to have a way to check that precondition. But there&rsquo;s plenty of functions that have preconditions but don&rsquo;t check them.</p>
+</blockquote>
+<blockquote class='book-hint '>
+  <p>Chandler: we really can&rsquo;t change the return type without forcing every library vendor to break their ABI. Not willing to do that when one library vendor says no.</p>
+</blockquote><p>More or less, everyone accepted that the problem existed, and they were discussing possible solutions. But, as you might have read is not that easy changing the standard library. Some proposals were made, like creating <em>waiting_future</em>, <em>shared_waiting_future</em> and being these the ones that block. But that would require to change the returning type of <em>async</em> to a waiting one. Meaning that the code below now wouldn&rsquo;t compile, imagine all the people that wrote this using C++11.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>std<span style="color:#f92672">::</span>future<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> f1 <span style="color:#f92672">=</span> std<span style="color:#f92672">::</span>async(...);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//It would have to be rewritten to this:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//std::waiting_future&lt;int&gt; f1 = std::async(...);
+</span></span></span></code></pre></div><p>And as Chandler says, is a very big thing to force. Breaking the API wasn&rsquo;t in the interest of the committee. Deprecating it seemed like an option, but without any good proposal they would be removing a tool without offering a new one.</p>
+<p>They realized that they hit a wall, they weren&rsquo;t able to provide a good enough solution that did little damage. So, it had to stay. So, it was kept there because of a retrocompatibility issue.</p>
+<p>Instead of fixing it, the plan was to offer new tools, in the hope of <em>async</em> being <em>soft deprecated</em> with the time. No changes were made related to this for C++14 or C++17, but with C++20 we got a new type of threads, <em>jthread</em>, that <em>join()</em> instead of terminating. <em>stop_token</em> and <em>co_await</em> were also added, this provided a way to destroy and suspend tasks.</p>
+<p>Some other features were added but the most important one is coming now in C++26. The execution control library. This is not any regular feature, it&rsquo;s a whole framework for managing asynchronous tasks in a composable way. It seems like Herb&rsquo;s desire finally materialized! Quoting him:</p>
+
+<blockquote class='book-hint '>
+  <p>std::execution is what I call “C++’s async model”</p>
+</blockquote><p>It&rsquo;s a very new feature, still lacks a lot of documentation and I still haven&rsquo;t tried it myself. It uses <em>Senders</em> and <em>Receivers</em> allowing to separate what to execute from where to execute it. They also allow the concatenation of tasks with the | operator, something new for concurrency in C++. You are able to use the <em>stop_token</em> to cancel an already executing parallel task and not block the main thread until it finishes. All integrated with the previously added <em>stop_token</em> to avoid freezes.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/articles/guard_vs_unique/" class="flex align-center book-icon">
+        <span>C&#43;&#43; *lock_guard* vs *unique_lock*, use cases</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="C&#43;&#43; *lock_guard* vs *unique_lock*, use cases" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-introduction-to"><strong>1) Introduction to <em>async</em></strong></a></li>
+        <li><a href="#2-the-issue"><strong>2) The issue</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

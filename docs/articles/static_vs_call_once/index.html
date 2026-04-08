@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  C&#43;&#43; call_once vs static for multithreaded singletons
+  
+  #
+  
+
+Before getting into it we need to know what a singleton is. According to one of the most popular pages for software design patterns refactoring guru:
+A Singleton is a creational design pattern, which ensures that only one object of its kind exists and provides a single point of access to it for any other code.
+This means, having just one instance of an object. It&rsquo;s used mainly for shared resources, being the most popular one the logger. There is a lot of controversy regarding the use of Singletons, wether they are abused, or not that useful in most cases. This article is not about design patterns and we won&rsquo;t be covering that part of the discussion. I have choosen this topic just for the shake of an example where I can speak about call_once and static on a concurrent scenario.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/articles/static_vs_call_once/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="C&#43;&#43; *call once* vs *static* for multithreaded singletons">
+  <meta property="og:description" content="C&#43;&#43; call_once vs static for multithreaded singletons # Before getting into it we need to know what a singleton is. According to one of the most popular pages for software design patterns refactoring guru:
+A Singleton is a creational design pattern, which ensures that only one object of its kind exists and provides a single point of access to it for any other code.
+This means, having just one instance of an object. It’s used mainly for shared resources, being the most popular one the logger. There is a lot of controversy regarding the use of Singletons, wether they are abused, or not that useful in most cases. This article is not about design patterns and we won’t be covering that part of the discussion. I have choosen this topic just for the shake of an example where I can speak about call_once and static on a concurrent scenario.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+    <meta property="article:published_time" content="2026-03-26T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-26T00:00:00+00:00">
+<title>C&#43;&#43; *call once* vs *static* for multithreaded singletons | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/articles/static_vs_call_once/">
+<link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.d6fba6bdb91e65305190d4c2a79515f56b8574b2aa29ea86967b679bf2d75df8.js" integrity="sha256-1vumvbkeZTBRkNTCp5UV9WuFdLKqKeqGlntnm/LXXfg=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Articles</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/static_vs_call_once/" class="active">C++ <em>call once</em> vs <em>static</em> for multithreaded singletons</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/guard_vs_unique/" class="">C++ <em>lock_guard</em> vs <em>unique_lock</em>, use cases</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/traits_concurrency/" class="">C++ <em>type_traits</em>, from a multithreading perspective</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/fluid/" class="">Fluid Simulation SPH</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/lepicasso/" class="">Le-Picasso</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>0xfun Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">System Architecure - What you have</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">Cryptography - BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">Cryptography - Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">System architecture - 64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">Cryptography - Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">Cryptography - Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>C&#43;&#43; *call once* vs *static* for multithreaded singletons</h3>
+
+  <label for="toc-control">
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents"></nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="c-call_-vs-static-for-multithreaded-singletons">
+  C++ <em>call_once</em> vs <em>static</em> for multithreaded singletons
+  
+  <a class="anchor" href="#c-call_-vs-static-for-multithreaded-singletons">#</a>
+  
+</h1>
+<p>Before getting into it we need to know what a singleton is. According to one of the most popular pages for software design patterns <a href="https://refactoring.guru/design-patterns/singleton/cpp/example">refactoring guru</a>:</p>
+<p><em>A Singleton is a creational design pattern, which ensures that only one object of its kind exists and provides a single point of access to it for any other code.</em></p>
+<p>This means, having just one instance of an object. It&rsquo;s used mainly for shared resources, being the most popular one the logger. There is a lot of controversy regarding the use of Singletons, wether they are abused, or not that useful in most cases. This article is not about design patterns and we won&rsquo;t be covering that part of the discussion. I have choosen this topic just for the shake of an example where I can speak about <em>call_once</em> and <em>static</em> on a concurrent scenario.</p>
+<p>Now, knowing that, lets try to code the most simple Singleton example.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">My_singleton</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> My_singleton<span style="color:#f92672">*</span> my_singleton;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> number;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        My_singleton(<span style="color:#66d9ef">int</span> number_) <span style="color:#f92672">:</span> number(number_) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        My_singleton <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> My_singleton<span style="color:#f92672">&amp;</span> other) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+</span></span><span style="display:flex;"><span>        My_singleton(My_singleton<span style="color:#f92672">&amp;</span> other) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getValue</span>(){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>number;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> My_singleton<span style="color:#f92672">*</span> <span style="color:#a6e22e">getInstance</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> number);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>My_singleton<span style="color:#f92672">*</span> My_singleton<span style="color:#f92672">::</span>my_singleton <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>My_singleton<span style="color:#f92672">*</span> My_singleton<span style="color:#f92672">::</span>getInstance(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> number){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(my_singleton <span style="color:#f92672">==</span> <span style="color:#66d9ef">nullptr</span>){
+</span></span><span style="display:flex;"><span>        my_singleton <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> My_singleton(number);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> my_singleton;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    My_singleton<span style="color:#f92672">*</span> sig1 <span style="color:#f92672">=</span> My_singleton<span style="color:#f92672">::</span>getInstance(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    My_singleton<span style="color:#f92672">*</span> sig2 <span style="color:#f92672">=</span> My_singleton<span style="color:#f92672">::</span>getInstance(<span style="color:#ae81ff">20</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> sig1<span style="color:#f92672">-&gt;</span>getValue();
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> sig2<span style="color:#f92672">-&gt;</span>getValue();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This is a very basic implementation. Our function <em>getInstance()</em> checks if there is any created, if there isn&rsquo;t it calls the constructor. Note that there aren&rsquo;t any public constructors, the only way of getting this class is by calling that function. The code outputs: 1010. Meaning that the second time we called <em>getInstance()</em> it didn&rsquo;t create another object, and used the alredy available one. That&rsquo;s why 20 is printed nowhere.</p>
+<p>Is this code safe for concurrency? Well, lets test it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;thread&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//... I&#39;ve skipped the implementation since it&#39;s the same as above
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(<span style="color:#66d9ef">int</span> number){
+</span></span><span style="display:flex;"><span>    My_singleton<span style="color:#f92672">*</span> sig <span style="color:#f92672">=</span> My_singleton<span style="color:#f92672">::</span>getInstance(number);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> sig<span style="color:#f92672">-&gt;</span>getValue();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t1(func, <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t2(func, <span style="color:#ae81ff">20</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    t1.join();
+</span></span><span style="display:flex;"><span>    t2.join();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The output for this code is: 1020. So we&rsquo;ve created 2 different instances of <em>My_singleton</em>, this implementation is not thread-safe. Lets try to implement a better solution:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;thread&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;mutex&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">My_singleton</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> My_singleton<span style="color:#f92672">*</span> my_singleton;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> std<span style="color:#f92672">::</span>mutex mtx;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> number;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        My_singleton(<span style="color:#66d9ef">int</span> number_) <span style="color:#f92672">:</span> number(number_) {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        My_singleton <span style="color:#66d9ef">operator</span><span style="color:#f92672">=</span>(<span style="color:#66d9ef">const</span> My_singleton<span style="color:#f92672">&amp;</span> other) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+</span></span><span style="display:flex;"><span>        My_singleton(My_singleton<span style="color:#f92672">&amp;</span> other) <span style="color:#f92672">=</span> <span style="color:#66d9ef">delete</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getValue</span>(){
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">-&gt;</span>number;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> My_singleton<span style="color:#f92672">*</span> <span style="color:#a6e22e">getInstance</span>(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> number);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>My_singleton<span style="color:#f92672">*</span> My_singleton<span style="color:#f92672">::</span>my_singleton <span style="color:#f92672">=</span> <span style="color:#66d9ef">nullptr</span>;
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>mutex My_singleton<span style="color:#f92672">::</span>mtx;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>My_singleton<span style="color:#f92672">*</span> My_singleton<span style="color:#f92672">::</span>getInstance(<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> number){
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>lock_guard<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>mutex<span style="color:#f92672">&gt;</span> lock(mtx);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(my_singleton <span style="color:#f92672">==</span> <span style="color:#66d9ef">nullptr</span>){
+</span></span><span style="display:flex;"><span>        my_singleton <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> My_singleton(number);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> my_singleton;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(<span style="color:#66d9ef">int</span> number){
+</span></span><span style="display:flex;"><span>    My_singleton<span style="color:#f92672">*</span> sig <span style="color:#f92672">=</span> My_singleton<span style="color:#f92672">::</span>getInstance(number);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> sig<span style="color:#f92672">-&gt;</span>getValue();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t1(func, <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span><span style="color:#66d9ef">thread</span> t2(func, <span style="color:#ae81ff">20</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    t1.join();
+</span></span><span style="display:flex;"><span>    t2.join();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We are now adding a static mutex (short for mutual exclusion) to ensure that only one thread accesses the  <em>getInstance()</em> function at a time. If you want to know more about <em>lock_guard</em> you can check this <a href="https://pablodiez.dev/docs/articles/guard_vs_unique/">article</a> that I wrote.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/articles/guard_vs_unique/" class="flex align-center book-icon">
+        <span>C&#43;&#43; *lock_guard* vs *unique_lock*, use cases</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="C&#43;&#43; *lock_guard* vs *unique_lock*, use cases" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

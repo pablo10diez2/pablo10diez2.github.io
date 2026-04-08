@@ -6,8 +6,15 @@
     <description>Recent content in Articles on Pablo Díez</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 15 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 08 Apr 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/docs/articles/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How *async* and *future::~future* shaped modern concurrency in C&#43;&#43;</title>
+      <link>https://pablo10diez2.github.io/docs/articles/async_futures/</link>
+      <pubDate>Wed, 08 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>https://pablo10diez2.github.io/docs/articles/async_futures/</guid>
+      <description>&lt;h1 id=&#34;how-async-and-future-shaped-modern-concurrency-in-c&#34;&gt;&#xA;  How &lt;em&gt;async&lt;/em&gt; and &lt;em&gt;future::~future&lt;/em&gt; shaped modern concurrency in C++&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#how-async-and-future-shaped-modern-concurrency-in-c&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;One of the ways to perform parallel tasks is using the standard library function &lt;em&gt;&lt;strong&gt;std::async&lt;/strong&gt;&lt;/em&gt;. This was introduced in the C++11 standard, alongside multiple concurrency features as a high level interface. If you are alredy familiar with this function I suggest you skip the brief introduction.&lt;/p&gt;&#xA;&lt;h3 id=&#34;1-introduction-to&#34;&gt;&#xA;  &lt;strong&gt;1) Introduction to &lt;em&gt;async&lt;/em&gt;&lt;/strong&gt;&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#1-introduction-to&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h3&gt;&#xA;&lt;p&gt;According to &lt;a href=&#34;https://en.cppreference.com/w/cpp/thread/async.html&#34;&gt;cppreference.com&lt;/a&gt;:&lt;/p&gt;&#xA;&#xA;&lt;blockquote class=&#39;book-hint &#39;&gt;&#xA;  &lt;p&gt;The function template std::async runs the function f asynchronously (potentially in a separate thread which might be part of a thread pool).&lt;/p&gt;</description>
+    </item>
     <item>
       <title>C&#43;&#43; *lock_guard* vs *unique_lock*, use cases</title>
       <link>https://pablo10diez2.github.io/docs/articles/guard_vs_unique/</link>
