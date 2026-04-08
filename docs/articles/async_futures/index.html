@@ -39,7 +39,7 @@ The function template std::async runs the function f asynchronously (potentially
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/async_futures/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.3e4e1854f9ce072805c3a463c9d941dbaa38a4c4a14861f23c7f5be6a43fb813.js" integrity="sha256-Pk4YVPnOBygFw6RjydlB26o4pMShSGHyPH9b5qQ/uBM=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.2c103508af1ec0b2aae42dde1b5f47e481a22aa6d2b119053d454593ae1b1b0b.js" integrity="sha256-LBA1CK8ewLKq5C3eG19H5IGiKqbSsRkFPUVFk64bGws=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -536,12 +536,12 @@ https://github.com/alex-shpak/hugo-book
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">//std::waiting_future&lt;int&gt; f1 = std::async(...);
 </span></span></span></code></pre></div><p>And as Chandler says, is a very big thing to force. Breaking the API wasn&rsquo;t in the interest of the committee. Deprecating it seemed like an option, but without any good proposal they would be removing a tool without offering a new one.</p>
 <p>They realized that they hit a wall, they weren&rsquo;t able to provide a good enough solution that did little damage. So, it had to stay, it was kept there because of a retrocompatibility issue.</p>
-<p>Instead of fixing it, the plan was to offer new tools, in the hope of <em>async</em> being <em>soft deprecated</em> with the time. No changes were made related to this for C++14 or C++17, but with C++20 we got a new type of threads, <em>jthread</em>, that <em>join()</em> instead of terminating. <em>stop_token</em> and <em>co_await</em> were also added, this provided a way to destroy and suspend tasks.</p>
+<p>Instead of fixing it, the plan was to offer new tools, in the hope of <em>async</em> becoming <em>soft deprecated</em> with the time. No changes were made related to this for C++14 or C++17, but with C++20 we got a new type of threads, <em>jthread</em>, that <em>join()</em> instead of terminating. <em>stop_token</em> and <em>co_await</em> were also added, they provided a way to destroy and suspend tasks.</p>
 <p>Some other features were added but the most important one is coming now in C++26. The execution control library. This is not any regular feature, it&rsquo;s a whole framework for managing asynchronous tasks in a composable way. It seems like Herb&rsquo;s desire finally materialized! Quoting him:</p>
 
 <blockquote class='book-hint '>
   <p>std::execution is what I call “C++’s async model”</p>
-</blockquote><p>It&rsquo;s a very new feature, still lacks a lot of documentation and I still haven&rsquo;t tried it myself. It uses <em>Senders</em> and <em>Receivers</em> allowing to separate what to execute from where to execute it. They also allow the concatenation of tasks with the | operator, something new for concurrency in C++. You are able to use the <em>stop_token</em> to cancel an already executing parallel task and not block the main thread until it finishes. All integrated with the previously added <em>stop_token</em> to avoid freezes.</p>
+</blockquote><p>It&rsquo;s a very new feature, still lacks a lot of documentation and I still haven&rsquo;t tried it myself. It uses <em>Senders</em> and <em>Receivers</em> allowing to separate what to execute from where to execute it. They also allow the concatenation of tasks with the | operator, something new for concurrency in C++. All integrated with the previously added <em>stop_token</em> to avoid freezes.</p>
 </article>
  
       
