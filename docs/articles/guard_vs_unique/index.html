@@ -27,7 +27,7 @@ When writing multithreaded applications there is an inevitable class that will o
 <link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/guard_vs_unique/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.2c103508af1ec0b2aae42dde1b5f47e481a22aa6d2b119053d454593ae1b1b0b.js" integrity="sha256-LBA1CK8ewLKq5C3eG19H5IGiKqbSsRkFPUVFk64bGws=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.51422d22cf53007d911479df5ec19af47608a2d19b6f0d101289a69fd21fadc4.js" integrity="sha256-UUItIs9TAH2RFHnfXsGa9HYIotGbbw0QEommn9IfrcQ=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -85,6 +85,19 @@ https://github.com/alex-shpak/hugo-book
 
           
   <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/object_sizes_and_padding/" class="">C++ class padding and memory layout</a>
+  
+
+        </li>
+      
     
       
         <li>
@@ -383,10 +396,10 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="c-lock_-vs-unique_-use-cases">
-  C++ <em>lock_guard</em> vs <em>unique_lock</em>, use cases
+  <article class="markdown book-article"><h1 id="c-lock_">
+  <strong>C++ lock_guard vs unique_lock, use cases</strong>
   
-  <a class="anchor" href="#c-lock_-vs-unique_-use-cases">#</a>
+  <a class="anchor" href="#c-lock_">#</a>
   
 </h1>
 <p>When writing multithreaded applications there is an inevitable class that will often need to be used in our code, <em><strong>std::mutex</strong></em>. This is a synchronization class that is used to protect shared data from being accessed by multiple threads at the same time. If you don&rsquo;t know much about it, you can either read what they are <a href="https://www.geeksforgeeks.org/cpp/std-mutex-in-cpp/">here</a>, or be content with the definition that a mutex is like a padlock.</p>
