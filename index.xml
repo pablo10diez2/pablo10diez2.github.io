@@ -6,7 +6,7 @@
     <description>Recent content in Home on Pablo Díez</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 30 Jun 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jul 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Fluid Simulation SPH</title>
@@ -25,7 +25,7 @@
     <item>
       <title>C&#43;&#43; class padding and memory layout</title>
       <link>https://pablo10diez2.github.io/docs/articles/object_sizes_and_padding/</link>
-      <pubDate>Tue, 30 Jun 2026 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 07 Jul 2026 00:00:00 +0000</pubDate>
       <guid>https://pablo10diez2.github.io/docs/articles/object_sizes_and_padding/</guid>
       <description>&lt;h1 id=&#34;c-class-padding-and-memory-layout&#34;&gt;&#xA;  &lt;strong&gt;C++ class padding and memory layout&lt;/strong&gt;&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-class-padding-and-memory-layout&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;I would imagine that most of you are already aware of the sizes of fundamental types, by fundamental I mean data types like short, int, long, char&amp;hellip; All these, differ depending on things like architecture (32 vs 64 bits) or even the compiler you are using.&lt;/p&gt;&#xA;&lt;p&gt;Of course, it&amp;rsquo;s important to know about them, to avoid overflows or losing information due to conversions, whether they are explicit or implicit. But there is not much to say about these sizes, they just &lt;em&gt;are&lt;/em&gt;. The only thing the C++ standard dictates are the &lt;em&gt;minimum&lt;/em&gt; sizes (in bits) for their implementation.&lt;/p&gt;</description>
     </item>
