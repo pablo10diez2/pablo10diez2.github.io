@@ -6,13 +6,20 @@
     <description>Recent content in Articles on Pablo Díez</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://pablo10diez2.github.io/docs/articles/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Virtual tables and dynamic dispatch</title>
+      <link>https://pablo10diez2.github.io/docs/articles/virtual_table_dynamic_dispatch/</link>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+      <guid>https://pablo10diez2.github.io/docs/articles/virtual_table_dynamic_dispatch/</guid>
+      <description>&lt;h1 id=&#34;virtual-tables-and-dynamic-dispatch&#34;&gt;&#xA;  &lt;strong&gt;Virtual tables and dynamic dispatch&lt;/strong&gt;&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#virtual-tables-and-dynamic-dispatch&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;h2 id=&#34;1---introduction&#34;&gt;&#xA;  &lt;strong&gt;1 - Introduction&lt;/strong&gt;&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#1---introduction&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h2&gt;&#xA;&lt;p&gt;This article is an attempt to explain how virtual tables work. I will be following the Itanium C++ ABI, which is what most vendors are based on, with the exception of none other than Microsoft, with MSVC.&lt;/p&gt;&#xA;&lt;p&gt;Why do we even need virtual tables? The answer is dynamic dispatch. Which can be defined as: the process of selecting which implementation of a polymorphic operation to call at runtime.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>C&#43;&#43; class padding and memory layout</title>
-      <link>https://pablo10diez2.github.io/docs/articles/object_sizes_and_padding/</link>
+      <link>https://pablo10diez2.github.io/docs/articles/class_padding_memory_layout/</link>
       <pubDate>Tue, 07 Jul 2026 00:00:00 +0000</pubDate>
-      <guid>https://pablo10diez2.github.io/docs/articles/object_sizes_and_padding/</guid>
+      <guid>https://pablo10diez2.github.io/docs/articles/class_padding_memory_layout/</guid>
       <description>&lt;h1 id=&#34;c-class-padding-and-memory-layout&#34;&gt;&#xA;  &lt;strong&gt;C++ class padding and memory layout&lt;/strong&gt;&#xA;  &#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#c-class-padding-and-memory-layout&#34;&gt;#&lt;/a&gt;&#xA;  &#xA;&lt;/h1&gt;&#xA;&lt;p&gt;I would imagine that most of you are already aware of the sizes of fundamental types, by fundamental I mean data types like short, int, long, char&amp;hellip; All these, differ depending on things like architecture (32 vs 64 bits) or even the compiler you are using.&lt;/p&gt;&#xA;&lt;p&gt;Of course, it&amp;rsquo;s important to know about them, to avoid overflows or losing information due to conversions, whether they are explicit or implicit. But there is not much to say about these sizes, they just &lt;em&gt;are&lt;/em&gt;. The only thing the C++ standard dictates are the &lt;em&gt;minimum&lt;/em&gt; sizes (in bits) for their implementation.&lt;/p&gt;</description>
     </item>
     <item>

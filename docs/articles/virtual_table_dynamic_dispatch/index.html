@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Virtual tables and dynamic dispatch
+  
+  #
+  
+
+
+  1 - Introduction
+  
+  #
+  
+
+This article is an attempt to explain how virtual tables work. I will be following the Itanium C&#43;&#43; ABI, which is what most vendors are based on, with the exception of none other than Microsoft, with MSVC.
+Why do we even need virtual tables? The answer is dynamic dispatch. Which can be defined as: the process of selecting which implementation of a polymorphic operation to call at runtime.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/docs/articles/virtual_table_dynamic_dispatch/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="Virtual tables and dynamic dispatch">
+  <meta property="og:description" content="Virtual tables and dynamic dispatch # 1 - Introduction # This article is an attempt to explain how virtual tables work. I will be following the Itanium C&#43;&#43; ABI, which is what most vendors are based on, with the exception of none other than Microsoft, with MSVC.
+Why do we even need virtual tables? The answer is dynamic dispatch. Which can be defined as: the process of selecting which implementation of a polymorphic operation to call at runtime.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+    <meta property="article:published_time" content="2026-07-23T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-07-23T00:00:00+00:00">
+<title>Virtual tables and dynamic dispatch | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/virtual_table_dynamic_dispatch/">
+<link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.c3ce53dcb34c1a67c4f3701f035c4d4ae02cb2ba456f140fe84a82e590c8e479.js" integrity="sha256-w85T3LNMGmfE83AfA1xNSuAssrpFbxQP6EqC5ZDI5Hk=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Articles</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/virtual_table_dynamic_dispatch/" class="active">Virtual tables and dynamic dispatch</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/class_padding_memory_layout/" class="">C++ class padding and memory layout</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/async_futures/" class="">How <em>async</em> and <em>future::~future</em> shaped modern concurrency in C++</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/guard_vs_unique/" class="">C++ <em>lock_guard</em> vs <em>unique_lock</em>, use cases</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/traits_concurrency/" class="">C++ <em>type_traits</em>, from a multithreading perspective</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/fluid/" class="">Fluid Simulation SPH</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>0xfun Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">System Architecure - What you have</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">Cryptography - BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">Cryptography - Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">System architecture - 64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">Cryptography - Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">Cryptography - Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Virtual tables and dynamic dispatch</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1---introduction"><strong>1 - Introduction</strong></a></li>
+    <li><a href="#2---simple-inheritance"><strong>2 - Simple inheritance</strong></a></li>
+    <li><a href="#3----double-inheritance"><strong>3 -  Double inheritance</strong></a></li>
+    <li><a href="#4---adjusting-pointers"><strong>4 - Adjusting pointers</strong></a></li>
+    <li><a href="#5---more-thunk-examples"><strong>5 - More thunk examples</strong></a></li>
+    <li><a href="#6---object-slicing"><strong>6 - Object slicing</strong></a></li>
+    <li><a href="#7---offset-to-top"><strong>7 - Offset-to-top</strong></a></li>
+    <li><a href="#8---conclusions"><strong>8 - Conclusions</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="virtual-tables-and-dynamic-dispatch">
+  <strong>Virtual tables and dynamic dispatch</strong>
+  
+  <a class="anchor" href="#virtual-tables-and-dynamic-dispatch">#</a>
+  
+</h1>
+<h2 id="1---introduction">
+  <strong>1 - Introduction</strong>
+  
+  <a class="anchor" href="#1---introduction">#</a>
+  
+</h2>
+<p>This article is an attempt to explain how virtual tables work. I will be following the Itanium C++ ABI, which is what most vendors are based on, with the exception of none other than Microsoft, with MSVC.</p>
+<p>Why do we even need virtual tables? The answer is dynamic dispatch. Which can be defined as: the process of selecting which implementation of a polymorphic operation to call at runtime.</p>
+<p>Before getting into this. Previous to this article I wrote another one titled <a href="https://pablodiez.dev/docs/articles/object_sizes_and_padding/">C++ class padding and memory layout</a>. I will try to make this one agnostic, so you are not forced to read it, but, things will make much more sense if you do so.</p>
+<hr>
+<h2 id="2---simple-inheritance">
+  <strong>2 - Simple inheritance</strong>
+  
+  <a class="anchor" href="#2---simple-inheritance">#</a>
+  
+</h2>
+<p>In this snippet of code, which <em>foo()</em> gets called? And more importantly, how?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> foo() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> foo() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    B b;
+</span></span><span style="display:flex;"><span>    A<span style="color:#f92672">*</span> a <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>b;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    a<span style="color:#f92672">-&gt;</span>foo(); 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If we take the code example from above, class A will have a virtual table, since it declares a virtual function. Using the following command we can see what it looks like.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>g++ -fdump-lang-class -c main.cpp
+</span></span></code></pre></div><p><img src="/images/vtable1.png" alt="pic1" /></p>
+<p>There are two separate structures in the output. One is obviously the virtual table of class A, the other one is the memory layout, how data members (including the vptr), are stored. For a better view on it, again I highly encourage you to read <a href="https://pablodiez.dev/docs/articles/object_sizes_and_padding/">this</a>.</p>
+<p>Notice that class A&rsquo;s size is 8 bytes, since it only has the virtual pointer. It points to the virtual table of A with an offset of 16 bytes, where the pointer to function <em>foo()</em> is stored.</p>
+<ul>
+<li>(0) Offset-to-top: distance to the complete object, this makes sense when a class is derived from multiple base classes. We will come back to it.</li>
+<li>(8) Typeinfo pointer: this is a pointer to a structure that contains information about the class. This enables RTTI (Run-Time Type Information), getting the type of an object at runtime. Used for casting for example.</li>
+</ul>
+<p>Continuing with B. Class B will also have a virtual table, because it inherits a virtual function, <em>foo()</em>, that overrides.</p>
+<p><img src="/images/vtable2.png" alt="pic2" /></p>
+<p>When there is inheritance, we need to separate what came from the parent class, from what is new (in terms of virtual functions). This means that usually a class x, would have as many vptrs, as different classes, that class x is composed of. If there is a derived class, that inherits from 3 base classes. You would have the 3 vptrs from the parents, plus a new one for that child class. This is a half-truth, because of order rules in inheritance, there is a way to save space by reusing one of the parent&rsquo;s vptr for the child.</p>
+<p>Let&rsquo;s see this with our example.</p>
+<p>When we create an object B, in B&rsquo;s virtual table there are 2 spaces to maintain, A (parent) and B (itself). We first inherit a vptr from A, that vptr is now assigned to B&rsquo;s virtual table. Not just to any point of the virtual table, the offset has to be to A&rsquo;s first virtual function, in this case it&rsquo;s easy since there is only one, <em>foo()</em> (remember the concept of the address point). That would be the space for A.</p>
+<p>For B:
+The child class inherits all the functions, so its first function/address point, is going to be the same one as the primary base class. In this case, B&rsquo;s vptr is also going to point to <em>foo()</em>. Even if B declared another virtual function, lets say <em>baz()</em>, B&rsquo;s address point would still be <em>foo()</em>, since it&rsquo;s the first function of the first parent class. That is why in the memory layout, you only see the vptr A, renamed to B, instead of two separated vptrs.</p>
+<h2 id="3----double-inheritance">
+  <strong>3 -  Double inheritance</strong>
+  
+  <a class="anchor" href="#3----double-inheritance">#</a>
+  
+</h2>
+<p>Moving to a more complete example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_A;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_B;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_C;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">baz</span>() {} 
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Now we have two virtual pointers, in reality they point to the same virtual table (C&rsquo;s), just with a different offset. I want to clarify that each class always has its own virtual table. When in the explanations you see vptr_B, is one thing to have that in the context of class B (that vptr_B will point to B&rsquo;s virtual table), or to have vptr_B in the context of a class C (now the vptr_B inherited by C, will point to C&rsquo;s virtual table with maybe an offset).</p>
+<p><img src="/images/vtable13.png" alt="pic3" /></p>
+<p>I hope you already understand why we only need two vptrs, despite being 2 parents and a child class. In any case lets go again:</p>
+<ul>
+<li>vptr_A needs to point to <em>foo()</em>, offset 16.</li>
+<li>vptr_B needs to point to <em>goo()</em>, offset 48.</li>
+<li>Now, the derived class, has access to all of them, because of inheritance. So, it needs to point to the first one, and because of inheritante order that will be <em>foo()</em>. We can use vptr_A also for C without the need of creating another one, since they share the same offset. The vptr does appear as C&rsquo;s, because it gets renamed. But, if you look in the memory layout, in reality it&rsquo;s the one inherited from A.</li>
+</ul>
+<p>Be also aware that <em>baz()</em> has its entry in the virtual table after <em>foo()</em>, but, before <em>goo()</em>. The order in the vtable is the following:</p>
+<ol>
+<li>Primary base</li>
+<li>Derived class (including overrides)</li>
+<li>Rest of base classes &hellip;</li>
+</ol>
+<h2 id="4---adjusting-pointers">
+  <strong>4 - Adjusting pointers</strong>
+  
+  <a class="anchor" href="#4---adjusting-pointers">#</a>
+  
+</h2>
+<p>When are virtual tables used?</p>
+<p>When we create an object of type C, and make a call to a polymorphic operation, which can be in this case <em>foo()</em>, the program doesn&rsquo;t need to check the virtual table, because objects are always of that type, they have a fixed structure and size.</p>
+<p>This changes with pointers, because we can have a pointer of a base class point to different children. Imagine a buffer where different messages can go through, for dealing with them you will need to use a <em>Message</em>*, and depending on what comes through it might point to a <em>Commit</em> or an <em>Update</em> child class. Or if Message is not abstract, it could actually point to a plain <em>Message</em>.</p>
+<p>That&rsquo;s what virtual tables are for. With that <em>Message</em>* you can execute <em>message-&gt;multicast()</em>, and despite not knowing the underlying type, it will make the correct call, considering there are multiple implementations.</p>
+<hr>
+<p>Let&rsquo;s now tweak a little bit the code and make C override <em>goo()</em> instead of <em>foo()</em>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_A;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_B;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_C;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">baz</span>() {} 
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>This produces the following virtual table:</p>
+<p><img src="/images/vtable15.png" alt="" /></p>
+<p>Pretty similar to what we could expect, with the exception that now vptr_B doesn&rsquo;t point to <em>C::goo</em> offset 24, is pointing to a weird function <em>C::_ZThn&hellip;</em>. That is a thunk, we will talk about it in a minute.</p>
+<p>To understand it better, consider this layout for an object C. Color blue for A&rsquo;s part, green for B&rsquo;s and in red you have the new addition. But, keep in mind, that the C object is all of it, not just the part in red. The dash represents padding. Total size: 32 bytes, as indicated above.</p>
+<p><img src="/images/vtable5.png" alt="pic4" />
+<em>(vptrA will probably appear renamed as vptrC)</em></p>
+<p>As we all know when you call a member function there is a parameter that is passed automatically, the <em>this</em> pointer, that points to the instance. A member function of class <em>A</em>, will expect <em>this</em> to be of type <em>A</em>*. Taking the example of function <em>foo()</em>, that is inherited from <em>A</em>. Even if we call it from <em>C</em>, <em>foo()</em> still expects <em>this</em> to be of type A*.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">// Imagine the previous A, B and C classes 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    a.foo(); <span style="color:#75715e">// ok, everything works
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    C c;
+</span></span><span style="display:flex;"><span>    c.foo(); <span style="color:#75715e">// this is a valid call, but how does it work?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><p>The compiler will need to consider if conversion is needed.</p>
+<p>If you look again at the memory layout of C, you can see that an object C actually starts with A&rsquo;s vptr and int, followed by the rest of the things that make up class C. This means that both objects A and C start at the same point, with the difference that C continues and adds more things.</p>
+<p><img src="/images/vtable6.png" alt="pic5" /></p>
+<p>So there is actually no conversion needed, <em>foo()</em> will receive a <em>this</em> pointer in the correct position and since it will treat it as one to A, it won&rsquo;t surpass the limit where B&rsquo;s data starts.</p>
+<p><img src="/images/vtable7.png" alt="pic6" /></p>
+<p>Even the vptrA, which in reality has been <em>hijacked</em> by child C, still points to the correct position in the virtual table. Despite not being used now.</p>
+<p>We can take a look at the assembly code, with <em>x86-64 gcc 16.1</em>:</p>
+<p><img src="/images/vtable10.png" alt="picass" />
+<em>(In this case, &ldquo;Reserve memory&rdquo; means extending the stack, not the heap)</em></p>
+<p>The process is exactly the same with C, because there is no conversion needed. And as you can see, no virtual tables in sight, since we are dealing with plain objects.</p>
+<hr>
+<p>This would be the assembly if we had used a pointer:</p>
+<p><img src="/images/vtable11.png" alt="picass2" /></p>
+<p>The same would happen if we used a reference. Now, if some conversion was needed the compiler would need to adjust the pointer.</p>
+<hr>
+<p>This pointer adjustment will be done easily by the compiler if we are working with objects. But, not with pointers.</p>
+<p>Let&rsquo;s go back to the <em>Message</em> example. If you receive a new Message to the buffer, you need to treat it with a pointer if you want to conserve polymorphism. The catch is that the compiler doesn&rsquo;t know the object is working with, underneath that pointer, there could be an object of type <em>Message</em>, <em>Commit</em>, <em>Update</em>&hellip; whatever.</p>
+<p>Since it&rsquo;s not able to resolve the underlying object, if you make a call to a member function, it will delegate the call to the virtual table.</p>
+<p>The virtual table is now in charge of:</p>
+<ul>
+<li>Adjusting the pointer.</li>
+<li>Calling the implementation.</li>
+</ul>
+<p>In the following code, we create an object <em>C</em>, and point to it with a <em>B</em>* (this can be extrapolated to the Message example). When doing this, the compiler automatically adjusts by 16 bytes, now b points directly to where the B subobject lives within C.</p>
+<p>From this point on, we just have <em>B</em>*&rsquo;s perspective, which doesn&rsquo;t know what is the real type of the object underneath. It could be of type <em>B</em>, and needing to call <em>B::goo()</em>. Or, of type <em>C</em>, being the correct call to <em>C::goo()</em>. Apart from needing to adjust the pointer.</p>
+<p>This is delegated to the virtual table, via the thunk. Remember from the virtual table that vptr_B instead of pointing to <em>C::goo()</em>, it pointed to a strange function. That is <em>C::goo()</em>&rsquo;s thunk, as you can see in the following assembly code, that thunk acts as a wrapper, first adjusting the pointer, and then making the call.</p>
+<p><img src="/images/vtable200.png" alt="" /></p>
+<p>To clarify, when b takes as value, c&rsquo;s memory address, the compiler will add 16 bytes. Pointing b know, to b&rsquo;s subobject inside c.</p>
+<p>Same would happen if <em>B</em>* pointed to a B object. The thing is that after dereferencing the vptr, instead of a thunk, you would have the direct call to <em>B::goo()</em>.</p>
+<h2 id="5---more-thunk-examples">
+  <strong>5 - More thunk examples</strong>
+  
+  <a class="anchor" href="#5---more-thunk-examples">#</a>
+  
+</h2>
+<p>If function <em>foo()</em> wasn&rsquo;t overridden by <em>C</em>, the thunk wouldn&rsquo;t be generated. Because there is no conversion needed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_A;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_B;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_C;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">baz</span>() {} 
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    C c;
+</span></span><span style="display:flex;"><span>    B<span style="color:#f92672">*</span> b <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>c;
+</span></span><span style="display:flex;"><span>    b<span style="color:#f92672">-&gt;</span>goo();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="/images/vtable20.png" alt="" /></p>
+<p>vptr_B points to offset 48, <em>B::goo()</em>, no thunk generated. Another example of how the call is delegated to the vtable, we can see how it dereferences the vptr, finding <em>B::goo()</em>.</p>
+<hr>
+<p>An example with multiple thunks looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_A;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_B;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hoo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_C;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">baz</span>() {} 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hoo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p><img src="/images/vtable21.png" alt="" /></p>
+<p>As you can see two thunks have been generated. One for <em>C::goo()</em> and the other one for <em>C::hoo()</em>. Thunks are unique to the object-function, that&rsquo;s why there is one, per virtual function of B, overridden by C.</p>
+<hr>
+<p>For the same reason that when there is no conversion needed, no thunk is generated, like when the function is not overridden. Thunks are not created for the primary base, since as we&rsquo;ve already seen, the <em>this</em> pointer is already adjusted.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_A;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">koo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_B;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hoo</span>() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> data_C;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">baz</span>() {} 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">koo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hoo</span>() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p><img src="/images/vtable22.png" alt="" /></p>
+<p>No thunks are created for <em>C::foo()</em> and <em>C::koo()</em>, because the layout has the same start for classes A and C.</p>
+<hr>
+<h2 id="6---object-slicing">
+  <strong>6 - Object slicing</strong>
+  
+  <a class="anchor" href="#6---object-slicing">#</a>
+  
+</h2>
+<p>There is an interesting case, for previous examples we have been creating an object, taking its memory address and assigning it to a pointer, but, what about the opposite?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    C<span style="color:#f92672">*</span> c <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> C;   <span style="color:#75715e">// Pointer to object C
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    A a <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>c;       <span style="color:#75715e">// Create A by dereferencing c
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    a.foo();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Unlike with pointers, this won&rsquo;t work as expected. We are not making <em>a</em>&rsquo;s memory address the same as <em>c</em>&rsquo;s, we are creating a new object via the copy constructor.</p>
+<p>This is called object slicing, creating a new object A, instead of pointing to <em>c</em>. It will just maintain the value of some data members, such as <em>c</em>&rsquo;s value of data_A. The rest will be &ldquo;sliced&rdquo;. Same happens with the virtual table, the vptr will point to vtable A, not C&rsquo;s.</p>
+<p><img src="/images/vtable12.png" alt="picass3" /></p>
+<hr>
+<h2 id="7---offset-to-top">
+  <strong>7 - Offset-to-top</strong>
+  
+  <a class="anchor" href="#7---offset-to-top">#</a>
+  
+</h2>
+<p>One of the things that has been overlooked, are conversions such as this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>C c;
+</span></span><span style="display:flex;"><span>B<span style="color:#f92672">*</span> b <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>c;
+</span></span></code></pre></div><p>This one is done very easily by the compiler, because it knows both structures.</p>
+<p><img src="/images/vtable8.png" alt="pic7" /></p>
+<p>But, we did mention earlier the offset-to-top, a value in the virtual table that indicates to every vptr how <em>far</em> they are from the base object, and we still haven&rsquo;t found a use case for it.</p>
+<p>The offset-to-top is a value put in the virtual table, such placement might seem on purpose to be used by thunks. But actually, thunks don&rsquo;t use them, they already know beforehand the adjustment needed, since each of them is tailored for a specific virtual member function.</p>
+<p>So, when is this field used?</p>
+<p>For conversions, such as <em>dynamic_cast</em>. Going back to the <em>Message</em> buffer example, if at some point you want to know what is the underlying type, you could do it with something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">is_Commit</span>(Message<span style="color:#f92672">*</span> message){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>( Commit<span style="color:#f92672">*</span> c <span style="color:#f92672">=</span> <span style="color:#66d9ef">dynamic_cast</span><span style="color:#f92672">&lt;</span>Commit<span style="color:#f92672">*&gt;</span>( message ); c <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nullptr</span> ){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here, dynamic_cast will make use of the offset-to-top value for adjusting the pointer. Returning true, if the cast is successful.</p>
+<h2 id="8---conclusions">
+  <strong>8 - Conclusions</strong>
+  
+  <a class="anchor" href="#8---conclusions">#</a>
+  
+</h2>
+<p>Initially, there was another section in the article. Related to the diamond problem, since it adds some more structures and complexity to the dynamic dispatch. But I think this is already long enough, so maybe I will make my next article about that.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/articles/class_padding_memory_layout/" class="flex align-center book-icon">
+        <span>C&#43;&#43; class padding and memory layout</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="C&#43;&#43; class padding and memory layout" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 15px; font-size: 1.15rem; z-index: 1000; background: var(--body-background, #ffffff); border-top: 1px solid rgba(128, 128, 128, 0.2);">
+  <p style="margin: 0;">
+    <a href="mailto:pablodiezruiz111@gmail.com" target="_blank" rel="noopener noreferrer">Email</a> • 
+    <a href="https://github.com/pablo10diez2" target="_blank" rel="noopener noreferrer">GitHub</a> • 
+    <a href="https://www.linkedin.com/in/pablo-d%C3%ADez-9592b1290/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </p>
+</div>
+
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1---introduction"><strong>1 - Introduction</strong></a></li>
+    <li><a href="#2---simple-inheritance"><strong>2 - Simple inheritance</strong></a></li>
+    <li><a href="#3----double-inheritance"><strong>3 -  Double inheritance</strong></a></li>
+    <li><a href="#4---adjusting-pointers"><strong>4 - Adjusting pointers</strong></a></li>
+    <li><a href="#5---more-thunk-examples"><strong>5 - More thunk examples</strong></a></li>
+    <li><a href="#6---object-slicing"><strong>6 - Object slicing</strong></a></li>
+    <li><a href="#7---offset-to-top"><strong>7 - Offset-to-top</strong></a></li>
+    <li><a href="#8---conclusions"><strong>8 - Conclusions</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

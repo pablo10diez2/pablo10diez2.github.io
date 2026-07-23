@@ -5,14 +5,338 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="My name is Pablo, Computer Engineering student at the University of Deusto. I like working on low-level programming with C&#43;&#43;.
-In this website you can find articles and projects. This page also documents some Capture The Flag (CTF) competitions in which I have taken part as a member of 0xDecode (Deusto Electronic Club of Developers and Engineers). You can find technical explanations on how I solved some challenges in the writeups section.">
+In this blog you can find articles and projects. This website also documents some Capture The Flag (CTF), you can find technical explanations on how I solved some challenges in the writeups section.
+Contact me: Email • GitHub • LinkedIn
+
+  
+
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Articles]
+
+          
+            
+              Virtual tables and dynamic dispatch
+            
+          
+        
+
+        
+          
+            2026-07-23
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Articles]
+
+          
+            
+              C&#43;&#43; class padding and memory layout
+            
+          
+        
+
+        
+          
+            2026-07-07
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Articles]
+
+          
+            
+              How async and future::~future shaped modern concurrency in C&#43;&#43;
+            
+          
+        
+
+        
+          
+            2026-04-08
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Articles]
+
+          
+            
+              C&#43;&#43; lock_guard vs unique_lock, use cases
+            
+          
+        
+
+        
+          
+            2026-03-15
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Articles]
+
+          
+            
+              C&#43;&#43; type_traits, from a multithreading perspective
+            
+          
+        
+
+        
+          
+            2026-03-15
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Projects]
+
+          
+            
+              Fluid Simulation SPH
+            
+          
+        
+
+        
+          
+            2026-02-10
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Writeups]
+
+          
+            
+              Cryptography - BasicLLL
+            
+          
+        
+
+        
+          
+            2025-07-14
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Writeups]
+
+          
+            
+              Cryptography - Shiro Hero
+            
+          
+        
+
+        
+          
+            2025-07-14
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Writeups]
+
+          
+            
+              System Architecture - What you have
+            
+          
+        
+
+        
+          
+            2025-07-14
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Writeups]
+
+          
+            
+              System architecture - 64 bits in my ark and texture
+            
+          
+        
+
+        
+          
+            2025-04-21
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Writeups]
+
+          
+            
+              Cryptography - Baby-RSA 2
+            
+          
+        
+
+        
+          
+            2025-04-19
+          
+        
+
+      
+    
+      
+
+        
+          
+          
+          
+            
+          
+
+          [Writeups]
+
+          
+            
+              Cryptography - Cantors Pairadox
+            
+          
+        
+
+        
+          
+            2025-04-19
+          
+        
+
+      
+    
+
+  
+
+
+">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/">
   <meta property="og:site_name" content="Pablo Díez">
   <meta property="og:title" content="Home">
   <meta property="og:description" content="My name is Pablo, Computer Engineering student at the University of Deusto. I like working on low-level programming with C&#43;&#43;.
-In this website you can find articles and projects. This page also documents some Capture The Flag (CTF) competitions in which I have taken part as a member of 0xDecode (Deusto Electronic Club of Developers and Engineers). You can find technical explanations on how I solved some challenges in the writeups section.">
+In this blog you can find articles and projects. This website also documents some Capture The Flag (CTF), you can find technical explanations on how I solved some challenges in the writeups section.
+Contact me: Email • GitHub • LinkedIn
+[Articles] Virtual tables and dynamic dispatch 2026-07-23 [Articles] C&#43;&#43; class padding and memory layout 2026-07-07 [Articles] How async and future::~future shaped modern concurrency in C&#43;&#43; 2026-04-08 [Articles] C&#43;&#43; lock_guard vs unique_lock, use cases 2026-03-15 [Articles] C&#43;&#43; type_traits, from a multithreading perspective 2026-03-15 [Projects] Fluid Simulation SPH 2026-02-10 [Writeups] Cryptography - BasicLLL 2025-07-14 [Writeups] Cryptography - Shiro Hero 2025-07-14 [Writeups] System Architecture - What you have 2025-07-14 [Writeups] System architecture - 64 bits in my ark and texture 2025-04-21 [Writeups] Cryptography - Baby-RSA 2 2025-04-19 [Writeups] Cryptography - Cantors Pairadox 2025-04-19">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>Home | Pablo Díez</title>
@@ -21,7 +345,7 @@ In this website you can find articles and projects. This page also documents som
 <link rel="canonical" href="https://pablo10diez2.github.io/">
 <link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
   <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.7118a39e8e650433ad291ccd37a4be5a26d5dede3b665a6338200899ded161c7.js" integrity="sha256-cRijno5lBDOtKRzNN6S&#43;WibV3t47ZlpjOCAImd7RYcc=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c3ce53dcb34c1a67c4f3701f035c4d4ae02cb2ba456f140fe84a82e590c8e479.js" integrity="sha256-w85T3LNMGmfE83AfA1xNSuAssrpFbxQP6EqC5ZDI5Hk=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://pablo10diez2.github.io/index.xml" title="Pablo Díez" />
 <!--
 Made with Book Theme
@@ -88,7 +412,20 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/docs/articles/object_sizes_and_padding/" class="">C++ class padding and memory layout</a>
+    <a href="/docs/articles/virtual_table_dynamic_dispatch/" class="">Virtual tables and dynamic dispatch</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/class_padding_memory_layout/" class="">C++ class padding and memory layout</a>
   
 
         </li>
@@ -159,19 +496,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/docs/projects/fluid/" class="">Fluid Simulation SPH</a>
-  
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/docs/projects/lepicasso/" class="">Le-Picasso</a>
   
 
         </li>
@@ -392,7 +716,7 @@ https://github.com/alex-shpak/hugo-book
       
       
   <article class="markdown book-article"><p>My name is Pablo, Computer Engineering student at the University of Deusto. I like working on low-level programming with <strong>C++</strong>.</p>
-<p>In this website you can find <strong>articles</strong> and <strong>projects</strong>. This page also documents some Capture The Flag (CTF) competitions in which I have taken part as a member of <strong>0xDecode</strong> (Deusto Electronic Club of Developers and Engineers). You can find technical explanations on how I solved some challenges in the <strong>writeups</strong> section.</p>
+<p>In this blog you can find <strong>articles</strong> and <strong>projects</strong>. This website also documents some Capture The Flag (CTF), you can find technical explanations on how I solved some challenges in the <strong>writeups</strong> section.</p>
 <p>Contact me: <a href="mailto:pablodiezruiz111@gmail.com">Email</a> • <a href="https://github.com/pablo10diez2">GitHub</a> • <a href="https://www.linkedin.com/in/pablo-d%C3%ADez-9592b1290/">LinkedIn</a></p>
 <div style="margin-top: 3rem; margin-bottom: 2rem;">
   <ul style="list-style: none; padding: 0; margin: 0;">
@@ -409,7 +733,33 @@ https://github.com/alex-shpak/hugo-book
 
           <span style="color: #888; font-family: monospace; font-size: 0.9em;">[Articles]</span>
 
-          <a href="https://pablo10diez2.github.io/docs/articles/object_sizes_and_padding/" style="text-decoration: none; color: #333; margin-left: 0.5rem;">
+          <a href="https://pablo10diez2.github.io/docs/articles/virtual_table_dynamic_dispatch/" style="text-decoration: none; color: #333; margin-left: 0.5rem;">
+            
+              Virtual tables and dynamic dispatch
+            
+          </a>
+        </div>
+
+        
+          <span style="color: #888; font-size: 0.85em; white-space: nowrap; margin-left: 1rem;">
+            2026-07-23
+          </span>
+        
+
+      </li>
+    
+      <li style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #eaeaea; padding: 0.5rem 0; margin-bottom: 0.2rem;">
+
+        <div>
+          
+          
+          
+            
+          
+
+          <span style="color: #888; font-family: monospace; font-size: 0.9em;">[Articles]</span>
+
+          <a href="https://pablo10diez2.github.io/docs/articles/class_padding_memory_layout/" style="text-decoration: none; color: #333; margin-left: 0.5rem;">
             
               C++ class padding and memory layout
             
@@ -523,32 +873,6 @@ https://github.com/alex-shpak/hugo-book
         
           <span style="color: #888; font-size: 0.85em; white-space: nowrap; margin-left: 1rem;">
             2026-02-10
-          </span>
-        
-
-      </li>
-    
-      <li style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #eaeaea; padding: 0.5rem 0; margin-bottom: 0.2rem;">
-
-        <div>
-          
-          
-          
-            
-          
-
-          <span style="color: #888; font-family: monospace; font-size: 0.9em;">[Projects]</span>
-
-          <a href="https://pablo10diez2.github.io/docs/projects/lepicasso/" style="text-decoration: none; color: #333; margin-left: 0.5rem;">
-            
-              Le-Picasso
-            
-          </a>
-        </div>
-
-        
-          <span style="color: #888; font-size: 0.85em; white-space: nowrap; margin-left: 1rem;">
-            2026-01-20
           </span>
         
 

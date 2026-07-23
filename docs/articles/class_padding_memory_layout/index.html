@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  C&#43;&#43; class padding and memory layout
+  
+  #
+  
+
+I would imagine that most of you are already aware of the sizes of fundamental types, by fundamental I mean data types like short, int, long, char&hellip; All these, differ depending on things like architecture (32 vs 64 bits) or even the compiler you are using.
+Of course, it&rsquo;s important to know about them, to avoid overflows or losing information due to conversions, whether they are explicit or implicit. But there is not much to say about these sizes, they just are. The only thing the C&#43;&#43; standard dictates are the minimum sizes (in bits) for their implementation.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://pablo10diez2.github.io/docs/articles/class_padding_memory_layout/">
+  <meta property="og:site_name" content="Pablo Díez">
+  <meta property="og:title" content="C&#43;&#43; class padding and memory layout">
+  <meta property="og:description" content="C&#43;&#43; class padding and memory layout # I would imagine that most of you are already aware of the sizes of fundamental types, by fundamental I mean data types like short, int, long, char… All these, differ depending on things like architecture (32 vs 64 bits) or even the compiler you are using.
+Of course, it’s important to know about them, to avoid overflows or losing information due to conversions, whether they are explicit or implicit. But there is not much to say about these sizes, they just are. The only thing the C&#43;&#43; standard dictates are the minimum sizes (in bits) for their implementation.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+    <meta property="article:published_time" content="2026-07-07T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-07-07T00:00:00+00:00">
+<title>C&#43;&#43; class padding and memory layout | Pablo Díez</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://pablo10diez2.github.io/docs/articles/class_padding_memory_layout/">
+<link rel="stylesheet" href="/book.min.2f10f0fc41b3c10bd50a52d502fa5388cc63d24b1c50f85b5108550c00e15d58.css" integrity="sha256-LxDw/EGzwQvVClLVAvpTiMxj0kscUPhbUQhVDADhXVg=" crossorigin="anonymous">
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.c3ce53dcb34c1a67c4f3701f035c4d4ae02cb2ba456f140fe84a82e590c8e479.js" integrity="sha256-w85T3LNMGmfE83AfA1xNSuAssrpFbxQP6EqC5ZDI5Hk=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Pablo Díez</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Articles</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/virtual_table_dynamic_dispatch/" class="">Virtual tables and dynamic dispatch</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/class_padding_memory_layout/" class="active">C++ class padding and memory layout</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/async_futures/" class="">How <em>async</em> and <em>future::~future</em> shaped modern concurrency in C++</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/guard_vs_unique/" class="">C++ <em>lock_guard</em> vs <em>unique_lock</em>, use cases</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/articles/traits_concurrency/" class="">C++ <em>type_traits</em>, from a multithreading perspective</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Projects</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/projects/fluid/" class="">Fluid Simulation SPH</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <span>Writeups</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>0xfun Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/0xfunctf/whatyouhave/" class="">System Architecure - What you have</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>L3ak Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/basiclll/" class="">Cryptography - BasicLLL</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/l3akctf/shirohero/" class="">Cryptography - Shiro Hero</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Dawg Ctf</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/64-bits/" class="">System architecture - 64 bits in my ark and texture</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/baby-rsa2/" class="">Cryptography - Baby-RSA 2</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/writeups/dawgctf/cantorspairadox/" class="">Cryptography - Cantors Pairadox</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>C&#43;&#43; class padding and memory layout</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1---empty-class"><strong>1 - Empty class</strong></a></li>
+    <li><a href="#2---functions"><strong>2 - Functions</strong></a></li>
+    <li><a href="#3---data-members"><strong>3 - Data members</strong></a></li>
+    <li><a href="#4---derived-classes"><strong>4 - Derived classes</strong></a></li>
+    <li><a href="#5---virtual-functions"><strong>5 - Virtual functions</strong></a></li>
+    <li><a href="#6---virtual-tables-with-multiple-inheritance"><strong>6 - Virtual tables with multiple inheritance</strong></a></li>
+    <li><a href="#what-for"><strong>What for</strong></a></li>
+    <li><a href="#closing"><strong>Closing</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="c-class-padding-and-memory-layout">
+  <strong>C++ class padding and memory layout</strong>
+  
+  <a class="anchor" href="#c-class-padding-and-memory-layout">#</a>
+  
+</h1>
+<p>I would imagine that most of you are already aware of the sizes of fundamental types, by fundamental I mean data types like short, int, long, char&hellip; All these, differ depending on things like architecture (32 vs 64 bits) or even the compiler you are using.</p>
+<p>Of course, it&rsquo;s important to know about them, to avoid overflows or losing information due to conversions, whether they are explicit or implicit. But there is not much to say about these sizes, they just <em>are</em>. The only thing the C++ standard dictates are the <em>minimum</em> sizes (in bits) for their implementation.</p>
+<p>Nevertheless, this is not what I want to talk about. Have you ever wondered what is the size of a class like this one?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> int_1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">short</span> short_2;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> int_3;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>And what about an empty class? Or a derived class? This is not just about micro optimizations, you are rarely going to be in a situation where saving a couple of bytes leads to a massive performance improvement, and if you do, please tell me where I can apply for that job! But knowing how a class is structured underneath, will give you a broader view in different topics like casting or inheritance.</p>
+<p>Before starting, during this article I will be assuming the following sizes:
+char: 1 byte,
+short: 2 bytes,
+int: 4 bytes,
+long: 8 bytes and
+pointer: 8 bytes.
+These are the typical sizes if you work on a 64 bit computer, although, by the end of the article you will be able to transfer what you have learnt no matter the underlying sizes.</p>
+<h2 id="1---empty-class">
+  <strong>1 - Empty class</strong>
+  
+  <a class="anchor" href="#1---empty-class">#</a>
+  
+</h2>
+<p>Let&rsquo;s start with the easiest one, the empty class.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>It&rsquo;s rational to think the size of an empty class is 0, since there is nothing to store. However, if we instantiate an object of such class, where does its memory address begin and end? Could we store an infinite number of class A objects in the same memory address?</p>
+<p>Well, obviously not! That is why even if a class has no data members it takes the minimum memory storage, 1 byte.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span>A a;
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(a); <span style="color:#75715e">// This prints 1 
+</span></span></span></code></pre></div><h2 id="2---functions">
+  <strong>2 - Functions</strong>
+  
+  <a class="anchor" href="#2---functions">#</a>
+  
+</h2>
+<p>What about member functions? We don&rsquo;t have to take them into account, programs are separated into data and code. And member functions are no exception, the size of this class is still 1, it&rsquo;s considered to be empty.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">foo</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>However, there are some type of functions that will affect the size of the class, we will talk about that later.</p>
+<h2 id="3---data-members">
+  <strong>3 - Data members</strong>
+  
+  <a class="anchor" href="#3---data-members">#</a>
+  
+</h2>
+<p>Let&rsquo;s start with the interesting part. How big is this class?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> int_1;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">*</span> ptr2;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Some of you might have summed the sizes of the data members, 12 bytes, which is not a bad approach, we will definitely have to take those into account. But, there is another thing we need to look at: the placement.</p>
+<p>When thinking about memory you shouldn&rsquo;t view it as just contiguous bytes. CPUs don&rsquo;t access specific bytes, they access blocks of words. And those blocks have to be multiples of 8, you either access 0-7 or 8-15, but you can&rsquo;t request a single read of bytes number 5-12 in old arquitectures, or it&rsquo;s highly inefficient in new ones. This is just how the hardware works. And again, I&rsquo;m assuming 64 bit architectures, the number bytes of a read will be defined by the word size of your machine.</p>
+<p>With this information you can now imagine memory as a layout that looks like this, where each cell is a byte. But also divided into blocks of 8 bytes.</p>
+<p><img src="/images/grid1.png" alt="pic2" /></p>
+<p>Let&rsquo;s now place the variables in this grid:</p>
+<p><img src="/images/grid2.png" alt="pic3" /></p>
+<p>I bet you already can see the problem. The int pointer is split across two 8 byte blocks. This means that we need two cycles to access it, 0-7 and 8-15. This is incredibly inefficient. The solution for this is padding. The compiler will add empty data between the two data members.</p>
+<p><img src="/images/grid3.png" alt="pic4" /></p>
+<p>Now, our class is considered to be aligned. We can access the pointer in a single read. It&rsquo;s typically much more worth it adding those 4 extra bytes of space, and optimizing the retrieval of the data.</p>
+<p>Let&rsquo;s see another example.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> c1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i2;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>For this class we will also have some padding, but in this case, it&rsquo;s different, we are not moving the int to the next 8 byte chunk, as we have said before we want to avoid having members split in two blocks. One way to guarantee this is to save them in a multiple of their size. This means that an integer can only be saved in a byte that is a multiple of 4. That&rsquo;s why we add 3 bytes of padding.</p>
+<p><img src="/images/grid4.png" alt="pic5" /></p>
+<p>If instead of an int there was short, we would only need to add 1 byte of padding, since a short can be placed in bytes nº 0, 2, 4 and 6.</p>
+<p>This is also related with the following type of padding. Imagine an array of the following class:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">long</span> l1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> c2;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Elements of an array need to be in contiguous memory. Remember that when you do <em>ptr++</em>, you are essentially adding to that pointer the sizeof whatever you are pointing to, that way you access the next element in an array. We can imagine the memory layout of an array that has two elements of class A like this:</p>
+<p><img src="/images/grid10.png" alt="array" /></p>
+<p>Now the second object is misaligned. We solve this with tail padding.</p>
+<p>What tail padding does is add these empty bytes at the end, so that the total size of the class/struct is multiple of the largest member&rsquo;s requirements. Now we can insert whatever number of elements of class A we desire in the array, and all of them will be aligned.</p>
+<p><img src="/images/grid5.png" alt="pic6" /></p>
+<p><em>sizeof()</em> class A is 16 bytes.</p>
+<p>In the case below, it&rsquo;s just 12 bytes. The biggest data member is an int (4 bytes), and the end of the layout is already at a multiple of 4.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">short</span> s2;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">char</span> c3;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">short</span> b4;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">short</span> b5;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p><img src="/images/grid9.png" alt="pic" /></p>
+<p>As an exercise I invite you to imagine the layout of an array of elements of class C. You will see that no data member of any element is left divided across two different blocks.</p>
+<p>One last thing to mention for this <em>chapter</em>, static data members don&rsquo;t need to be taken into account. Since these are stored in the data segment of the executable.</p>
+<h2 id="4---derived-classes">
+  <strong>4 - Derived classes</strong>
+  
+  <a class="anchor" href="#4---derived-classes">#</a>
+  
+</h2>
+<p>Moving to OOP. A derived class will have also the size of its immediate base class.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    B b;
+</span></span><span style="display:flex;"><span>    C c;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Size of A: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(a) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>; 
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Size of B: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(b) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>; 
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Size of C: &#34;</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#66d9ef">sizeof</span>(c) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This will print: 4, 8, 12.</p>
+<p>Pretty straightforward. Although, I want to bring back the empty class. I stated that the size of an empty class is always 1 byte. But, what if we inherit from one? Are we adding 1 byte?</p>
+<p>Not really, this is because of the Empty Base Optimization, which is just not adding that byte to the size. Don&rsquo;t misunderstand me, the individual size is still 1. Look at the following snippet of code.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A {
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>There is no extra size coming from the inheritance, but a data member of type A will still have size one. Layout of class B:</p>
+<p><img src="/images/grid11.png" alt="layout" /></p>
+<h2 id="5---virtual-functions">
+  <strong>5 - Virtual functions</strong>
+  
+  <a class="anchor" href="#5---virtual-functions">#</a>
+  
+</h2>
+<p>To understand why virtual functions are relevant to this matter, we first need to comprehend them.</p>
+<p>In the code snippet below we declare a base class A that has a virtual function <em>foo()</em>, then a derived class B. If we call this function through the child class, since it hasn&rsquo;t implemented one, it will call the one from A.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> foo(){
+</span></span><span style="display:flex;"><span>            std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Hello from A&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A{
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    B b;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    b.foo(); <span style="color:#75715e">// this prints &#34;Hello from A&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The way B is able to know what to call for each function, is thanks to the virtual pointer and the virtual table. The virtual table is a table that has pointers to the different virtual functions the class has access to, that way it&rsquo;s able to track dynamic polymorphism. And the virtual pointer is a pointer that points to this table.</p>
+<p><img src="/images/vptr1.png" alt="pic7" /></p>
+<p>A more complete example would look like this.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> foo(){}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">goo</span>(){}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> goo() <span style="color:#66d9ef">override</span> {}
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p><img src="/images/vptr2.png" alt="pic8" /></p>
+<p>So if we call <em>foo()</em> through a type B object, it will call the original implementation from A. And if we call <em>goo()</em>, it will execute the implementation of class B.</p>
+<p>This virtual pointer has to be considered for the size of a class. We can see this better with an example.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i1;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>(){}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i2;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>Starting with A, the size will be 8 bytes of the vptr + 4 bytes of the int, and don&rsquo;t forget about the tail padding, since the virtual pointer also counts as a data member now. The memory layout looks like this for the class.</p>
+<p><img src="/images/grid7.png" alt="pic9" /></p>
+<p>Moving to B. We already know that derived classes take also the content from the most inmediate base class, and since it has a virtual function (<em>foo()</em>, located in A), we need to add the vptr.</p>
+<p>A couple of things related to this. First, the virtual pointer is just added once, each class should just point to each own virtual table. Second, you don&rsquo;t just add the size of A to B. You shouldn&rsquo;t look at A as a constant block, in this case we can remove the previous padding that we did and insert there B&rsquo;s integer. The memory layout will look something like this.</p>
+<p>(Despite the vptr being in the same position it now points to the virtual table of B).</p>
+<p><img src="/images/grid8.png" alt="pic10" /></p>
+<p>In fact, both classes have the same size, 16 bytes.</p>
+<p>This last thing I mentioned, about removing the tail padding of the base class for creating the child, doesn&rsquo;t work with MSVC (Microsoft&rsquo;s compiler). Unlike Clang or GCC, MSVC does not follow the Itanium C++ ABI, where this is defined.</p>
+<h2 id="6---virtual-tables-with-multiple-inheritance">
+  <strong>6 - Virtual tables with multiple inheritance</strong>
+  
+  <a class="anchor" href="#6---virtual-tables-with-multiple-inheritance">#</a>
+  
+</h2>
+<p>There is a case when there is not just one virtual pointer, when there is a derived class that inherits virtual functions from multiple base classes. Let me explain this with an example.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> foo() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> goo() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> hoo() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We have two separate base classes A and B, with virtual functions. Then class C, that inherits from both of them, and has its own virtual function. The interesting part in here is the layout of class C, we can see it in two ways.</p>
+<p>We can compile the file with GCC activating a flag to see the layout: <strong>g++ -fdump-lang-class -c main.cpp</strong>. This will create a .class file, where we can see the layout of C and its virtual table.</p>
+<p><img src="/images/gcc.png" alt="gcclayout" /></p>
+<p>And if we use the clang compiler we can make use of the flag: <strong>-Xclang -fdump-record-layouts</strong></p>
+<p><img src="/images/clang.png" alt="clanglayout" /></p>
+<p>In my opinion the best way to see it, is combining the virtual table of class C, that GCC printed, and the class layout of clang in something like this:</p>
+<p><img src="/images/combination.png" alt="combination" /></p>
+<p>What we see is that we have two different virtual pointers to the same table, with the exception of a different offset. This is because of upcasting, picture the following program.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> foo() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> goo() {}
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> A, <span style="color:#66d9ef">public</span> B {
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(B<span style="color:#f92672">*</span> b){
+</span></span><span style="display:flex;"><span>    b<span style="color:#f92672">-&gt;</span>goo();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+</span></span><span style="display:flex;"><span>    C c;
+</span></span><span style="display:flex;"><span>    func( <span style="color:#f92672">&amp;</span>c );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><em>func()</em> takes a pointer to an object B, but, we pass one to an object C. The compiler won&rsquo;t create a pointer to B, it will add some offset to the one we passed, to make a gimmick. That&rsquo;s why we need distinction between the two vptrs.</p>
+<p>A rule of thumb we can use for this: a derived class will have as many virtual pointers, as base classes with virtual functions.</p>
+<p>Virtual tables can get something more complicated than this, and I think they deserve their own article so we can study them more calmly. For the moment we can make use of that rule.</p>
+<h2 id="what-for">
+  <strong>What for</strong>
+  
+  <a class="anchor" href="#what-for">#</a>
+  
+</h2>
+<p>Back to the begininng. I said that learning about this can help us understand casting. Let&rsquo;s see it.</p>
+<p>One of the most agressive forms of casting C++ has, is reinterpret_cast, with it we can reinterpret the bits of an object as another. Of course, this is the most dangerous type of conversion, since it&rsquo;s very easy to lead to undefined behaviour. That&rsquo;s why C++ provides the developer with different resources to facilitate this.</p>
+<p>For example, in the code below, we can use the type trait <em>std::is_layout_compatible</em> to check if it would be safe for a pointer of class B to point to the bits of A. The conditional resolves to true, giving us green light for the casting.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;type_traits&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    B<span style="color:#f92672">*</span> b;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>( std<span style="color:#f92672">::</span>is_layout_compatible<span style="color:#f92672">&lt;</span>A, B<span style="color:#f92672">&gt;</span>() ){
+</span></span><span style="display:flex;"><span>        b <span style="color:#f92672">=</span> <span style="color:#66d9ef">reinterpret_cast</span><span style="color:#f92672">&lt;</span>B<span style="color:#f92672">*&gt;</span>( <span style="color:#f92672">&amp;</span>a );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> a.i <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl; <span style="color:#75715e">// 10
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> b<span style="color:#f92672">-&gt;</span>i <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl; <span style="color:#75715e">// 10
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>But what if A had a virtual function? Or, if A was a derived class, you can ask yourself: is its base class empty? Does A inherit any virtual functions? You can figure this without the need of any type trait!</p>
+<p>This won&rsquo;t cast, because the char makes the layout of A different from B&rsquo;s.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Base</span>{
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">char</span> c;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Base {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    B<span style="color:#f92672">*</span> b;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>( std<span style="color:#f92672">::</span>is_layout_compatible<span style="color:#f92672">&lt;</span>A, B<span style="color:#f92672">&gt;</span>() ){
+</span></span><span style="display:flex;"><span>        b <span style="color:#f92672">=</span> <span style="color:#66d9ef">reinterpret_cast</span><span style="color:#f92672">&lt;</span>B<span style="color:#f92672">*&gt;</span>( <span style="color:#f92672">&amp;</span>a );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> a.i <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> b<span style="color:#f92672">-&gt;</span>i <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>But, this will work perfectly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C++" data-lang="C++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;type_traits&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Base</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span>(){ } 
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Base {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    A a;
+</span></span><span style="display:flex;"><span>    B<span style="color:#f92672">*</span> b;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>( std<span style="color:#f92672">::</span>is_layout_compatible<span style="color:#f92672">&lt;</span>A, B<span style="color:#f92672">&gt;</span>() ){
+</span></span><span style="display:flex;"><span>        b <span style="color:#f92672">=</span> <span style="color:#66d9ef">reinterpret_cast</span><span style="color:#f92672">&lt;</span>B<span style="color:#f92672">*&gt;</span>( <span style="color:#f92672">&amp;</span>a );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> a.i <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>        std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> b<span style="color:#f92672">-&gt;</span>i <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="closing">
+  <strong>Closing</strong>
+  
+  <a class="anchor" href="#closing">#</a>
+  
+</h2>
+<p>The purpose of this article is not to replace these language facilities with some off the top of your head layout calculation. No one implements a sorting algorithm everytime they want to classify an array, but I think most of us would agree that having had to implement quicksort, bubblesort&hellip; in the past, gives you a better understanding of them. So I hope this serves you the same way.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/articles/virtual_table_dynamic_dispatch/" class="flex align-center book-icon">
+        <img src="/svg/backward.svg" class="book-icon" alt="Previous" title="Virtual tables and dynamic dispatch" />
+        <span>Virtual tables and dynamic dispatch</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/articles/async_futures/" class="flex align-center book-icon">
+        <span>How *async* and *future::~future* shaped modern concurrency in C&#43;&#43;</span>
+        <img src="/svg/forward.svg" class="book-icon" alt="Next" title="How *async* and *future::~future* shaped modern concurrency in C&#43;&#43;" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 15px; font-size: 1.15rem; z-index: 1000; background: var(--body-background, #ffffff); border-top: 1px solid rgba(128, 128, 128, 0.2);">
+  <p style="margin: 0;">
+    <a href="mailto:pablodiezruiz111@gmail.com" target="_blank" rel="noopener noreferrer">Email</a> • 
+    <a href="https://github.com/pablo10diez2" target="_blank" rel="noopener noreferrer">GitHub</a> • 
+    <a href="https://www.linkedin.com/in/pablo-d%C3%ADez-9592b1290/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </p>
+</div>
+
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+
+<aside class="book-toc">
+  <div class="book-toc-content">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1---empty-class"><strong>1 - Empty class</strong></a></li>
+    <li><a href="#2---functions"><strong>2 - Functions</strong></a></li>
+    <li><a href="#3---data-members"><strong>3 - Data members</strong></a></li>
+    <li><a href="#4---derived-classes"><strong>4 - Derived classes</strong></a></li>
+    <li><a href="#5---virtual-functions"><strong>5 - Virtual functions</strong></a></li>
+    <li><a href="#6---virtual-tables-with-multiple-inheritance"><strong>6 - Virtual tables with multiple inheritance</strong></a></li>
+    <li><a href="#what-for"><strong>What for</strong></a></li>
+    <li><a href="#closing"><strong>Closing</strong></a></li>
+  </ul>
+</nav>
+
+
+
+  </div>
+</aside>
+
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

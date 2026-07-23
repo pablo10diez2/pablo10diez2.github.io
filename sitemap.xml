@@ -3,18 +3,18 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://pablo10diez2.github.io/docs/</loc>
-    <lastmod>2026-07-07T00:00:00+00:00</lastmod>
+    <lastmod>2026-07-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/projects/fluid/</loc>
     <lastmod>2026-02-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/docs/projects/lepicasso/</loc>
-    <lastmod>2026-01-20T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://pablo10diez2.github.io/docs/articles/</loc>
-    <lastmod>2026-07-07T00:00:00+00:00</lastmod>
+    <lastmod>2026-07-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://pablo10diez2.github.io/docs/articles/object_sizes_and_padding/</loc>
+    <loc>https://pablo10diez2.github.io/docs/articles/virtual_table_dynamic_dispatch/</loc>
+    <lastmod>2026-07-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://pablo10diez2.github.io/docs/articles/class_padding_memory_layout/</loc>
     <lastmod>2026-07-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://pablo10diez2.github.io/docs/articles/async_futures/</loc>
